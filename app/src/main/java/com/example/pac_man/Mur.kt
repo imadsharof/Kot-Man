@@ -7,6 +7,8 @@ import android.view.SurfaceHolder
 
 class Mur(private val surfaceView: SurfaceView) {
     private var holder: SurfaceHolder = surfaceView.holder
+    private val w: Float = surfaceView.width.toFloat()
+    private val h: Float = surfaceView.height.toFloat()
 
     fun dessiner() {
         val canvas = holder.lockCanvas()
@@ -25,26 +27,26 @@ class Mur(private val surfaceView: SurfaceView) {
         paintInterieur.strokeWidth = 10f
 
         //Dessin haut map
-        canvas.drawLine(100f, 100f, surfaceView.width - 100f, 100f, paintInterieur)
+        canvas.drawLine(100f, 100f, w - 100f, 100f, paintInterieur)
 
         // Dessin mur droit
-        canvas.drawLine(surfaceView.width - 100f, 100f, surfaceView.width - 100f, surfaceView.height/2 - 50f, paintInterieur)
-        canvas.drawLine(surfaceView.width - 100f, surfaceView.height/2 + 50f, surfaceView.width - 100f, surfaceView.height - 100f, paintInterieur)
+        canvas.drawLine(w - 100f, 100f, w - 100f, h/2 - 50f, paintInterieur)
+        canvas.drawLine(w - 100f, h/2 + 50f, w - 100f, h - 100f, paintInterieur)
 
         // Dessin mur bas
-        canvas.drawLine(surfaceView.width - 100f, surfaceView.height - 100f, 100f, surfaceView.height - 100f, paintInterieur)
+        canvas.drawLine(w - 100f, h - 100f, 100f, h - 100f, paintInterieur)
 
         // Dessin mur gauche
-        canvas.drawLine(100f, surfaceView.height - 100f, 100f, surfaceView.height/2 + 50f, paintInterieur)
-        canvas.drawLine(100f, surfaceView.height/2 - 50f, 100f, 100f, paintInterieur)
+        canvas.drawLine(100f, h - 100f, 100f, h/2 + 50f, paintInterieur)
+        canvas.drawLine(100f, h/2 - 50f, 100f, 100f, paintInterieur)
 
         // Dessin mur pour que pacman passe de droite a gauche
-        canvas.drawLine(surfaceView.width - 100f,surfaceView.height/2 - 50f,surfaceView.width + 0f ,surfaceView.height/2 - 50f,paintInterieur)
-        canvas.drawLine(surfaceView.width - 100f,surfaceView.height/2 + 50f,surfaceView.width + 0f ,surfaceView.height/2 + 50f,paintInterieur)
+        canvas.drawLine(w - 100f,h/2 - 50f,w ,h/2 - 50f,paintInterieur)
+        canvas.drawLine(w - 100f,h/2 + 50f,w  ,h/2 + 50f,paintInterieur)
 
         // Dessin mur pour que pacman passe de gauche à droite
-        canvas.drawLine(100f,surfaceView.height/2 + 50f, 0f ,surfaceView.height/2 + 50f,paintInterieur)
-        canvas.drawLine( 100f,surfaceView.height/2 - 50f, 0f ,surfaceView.height/2 - 50f,paintInterieur)
+        canvas.drawLine(100f,h/2 + 50f, 0f ,h/2 + 50f,paintInterieur)
+        canvas.drawLine( 100f,h/2 - 50f, 0f ,h/2 - 50f,paintInterieur)
 
 
 
