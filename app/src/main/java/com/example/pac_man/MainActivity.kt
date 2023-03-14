@@ -2,6 +2,7 @@ package com.example.pac_man
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.View
 
@@ -43,4 +44,5 @@ class MainActivity : AppCompatActivity() {
         // Ajouter la SurfaceView à votre mise en page XML
         setContentView(surfaceView)
     }
+
 }
