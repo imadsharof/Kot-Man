@@ -1,14 +1,33 @@
 package com.example.pac_man
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Canvas
-import android.graphics.Paint
+import android.content.res.Resources
+import android.graphics.*
 import android.view.SurfaceView
 
-class PacMan(private val surfaceView: SurfaceView) {
-    private val paint = Paint()
+class PacMan(private val resources: Resources, val caseWidth: Int, val caseHeight: Int){
+
+    private val pacManBitmap: Bitmap
+    private var posX: Int = 0 // Coordonnée X de la position du Pac-Man
+    private var posY: Int = 0 // Coordonnée Y de la position du Pac-Man
+    var dead = true
+
+    init {
+        val originalBitmap = BitmapFactory.decodeResource(resources, R.drawable.kotlinlogo)
+        pacManBitmap = Bitmap.createScaledBitmap(originalBitmap, caseWidth, caseHeight, true)
+    }
+
+    fun draw(canvas: Canvas) {
+        canvas.drawBitmap(pacManBitmap, posX.toFloat(), posY.toFloat(), null)
+    }
+
+    fun setPosition(x: Int, y: Int) {
+        posX = x * caseWidth
+        posY = y * caseHeight
+    }
+}
+    // code mis en commentaire
+    /*private val paint = Paint()
     private var currentFrame = 0
     private var direction = 0 // 0: droite, 1: gauche
 
@@ -33,5 +52,4 @@ class PacMan(private val surfaceView: SurfaceView) {
 
     fun changeDirection(newDirection: Int) {
         direction = newDirection
-    }
-}
+    }*/
