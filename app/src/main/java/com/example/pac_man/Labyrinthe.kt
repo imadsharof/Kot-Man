@@ -11,7 +11,6 @@ class Labyrinthe(private val resources: Resources, val caseWidth: Int, val caseH
     init {
         val wallOriginal = BitmapFactory.decodeResource(resources, R.drawable.binaire)
         wallBitmap = Bitmap.createScaledBitmap(wallOriginal, caseWidth, caseHeight, true)
-
     }
 
     companion object {
@@ -19,6 +18,7 @@ class Labyrinthe(private val resources: Resources, val caseWidth: Int, val caseH
         const val NB_LIGNES = 27
     }
 
+    // 27 ligne 25 colonne
     var map =  arrayOf(
         intArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
         intArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
@@ -49,6 +49,36 @@ class Labyrinthe(private val resources: Resources, val caseWidth: Int, val caseH
         intArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
         )
 
+    // 46 colonne et 27 lignes
+    /*var map2 =  arrayOf(
+        intArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+        intArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+        intArrayOf(0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+        intArrayOf(0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1,1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1),
+        intArrayOf(0, 0, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1,1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1),
+        intArrayOf(0, 0, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1,1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1),
+        intArrayOf(0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1,1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1),
+        intArrayOf(0, 0, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1,1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1),
+        intArrayOf(0, 0, 1, 2, 2, 2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 2, 2, 1,1, 2, 2, 2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 2, 2, 1),
+        intArrayOf(0, 0, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 1, 1, 1,1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 1, 1, 1),
+        intArrayOf(0, 0, 0, 0, 0, 0, 1, 2, 1, 2, 2, 2, 2, 2, 2, 2, 1, 2, 1, 0, 0, 0, 0,0, 0, 0, 0, 1, 2, 1, 2, 2, 2, 2, 2, 2, 2, 1, 2, 1, 0, 0, 0, 0),
+        intArrayOf(0, 0, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 2, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1,1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 2, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1),
+        intArrayOf(0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2,2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2),
+        intArrayOf(0, 0, 1, 1, 1, 1, 1, 2, 1, 2, 1, 2, 2, 2, 1, 2, 1, 2, 1, 1, 1, 1, 1,1, 1, 1, 1, 1, 2, 1, 2, 1, 2, 2, 2, 1, 2, 1, 2, 1, 1, 1, 1, 1),
+        intArrayOf(0, 0, 0, 0, 0, 0, 1, 2, 1, 2, 1, 1, 1, 1, 1, 2, 1, 2, 1, 0, 0, 0, 0,0, 0, 0, 0, 1, 2, 1, 2, 1, 1, 1, 1, 1, 2, 1, 2, 1, 0, 0, 0, 0),
+        intArrayOf(0, 0, 0, 0, 0, 0, 1, 2, 1, 2, 2, 2, 2, 2, 2, 2, 1, 2, 1, 0, 0, 0, 0,0, 0, 0, 0, 1, 2, 1, 2, 2, 2, 2, 2, 2, 2, 1, 2, 1, 0, 0, 0, 0),
+        intArrayOf(0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1,1, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1),
+        intArrayOf(0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1,1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1),
+        intArrayOf(0, 0, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1,1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1),
+        intArrayOf(0, 0, 1, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 1,1, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 1),
+        intArrayOf(0, 0, 1, 1, 2, 2, 1, 2, 1, 2, 1, 1, 1, 1, 1, 2, 1, 2, 1, 2, 2, 1, 1,1, 1, 2, 2, 1, 2, 1, 2, 1, 1, 1, 1, 1, 2, 1, 2, 1, 2, 2, 1, 1),
+        intArrayOf(0, 0, 1, 2, 2, 2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 2, 2, 1,1, 2, 2, 2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 2, 2, 1),
+        intArrayOf(0, 0, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1,1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1),
+        intArrayOf(0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1,1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1),
+        intArrayOf(0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+        intArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+        intArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+    )*/
 
     val nbLignes = map.size
     val nbColonnes = map[0].size
@@ -60,28 +90,11 @@ class Labyrinthe(private val resources: Resources, val caseWidth: Int, val caseH
         return map[y][x] == 1
     }
 
-    /*
-    fun draw(canvas: Canvas) {
-        val paint = Paint()
-        paint.color = Color.BLUE
 
-        for (i in 0 until nbLignes) {
-            for (j in 0 until nbColonnes) {
-                val left = j * caseWidth
-                val top = i * caseHeight
-                val right = left + caseWidth
-                val bottom = top + caseHeight
-
-                if (isMur(j, i)) {
-                    canvas.drawRect(left.toFloat(), top.toFloat(), right.toFloat(), bottom.toFloat(), paint)
-                }
-            }
-        }
-    }*/
 
 
     // Fun draw dessine avec des briques
-    fun draw(canvas: Canvas) {
+    /*fun draw(canvas: Canvas) {
         for (i in 0 until nbLignes) {
             for (j in 0 until nbColonnes) {
                 val left = j * caseWidth
@@ -92,11 +105,52 @@ class Labyrinthe(private val resources: Resources, val caseWidth: Int, val caseH
                 }
             }
         }
+    }*/
+
+    fun draw(canvas: Canvas) {
+        val borderWidth = 5f // ajustez la valeur de l'épaisseur de bordure
+        val paint = Paint().apply {
+            color = Color.BLACK
+            style = Paint.Style.FILL
+        }
+        val borderPaint = Paint().apply {
+            color = Color.BLUE
+            style = Paint.Style.FILL_AND_STROKE
+            strokeWidth = borderWidth
+        }
+
+
+        for (i in 0 until nbLignes) {
+            for (j in 0 until nbColonnes) {
+                val left = j * caseWidth
+                val top = i * caseHeight
+
+                if (isMur(j, i)) {
+                    // Dessiner le rectangle intérieur en noir
+                    canvas.drawRect(left + borderWidth, top + borderWidth, left + caseWidth - borderWidth, top + caseHeight - borderWidth, paint)
+
+                    // Dessiner les bords adjacents en bleu
+                    if (i == 0 || !isMur(j, i - 1)) {
+                        // Dessiner le bord supérieur
+                        canvas.drawRect(left.toFloat() , top.toFloat(), (left + caseWidth).toFloat() , top.toFloat(), borderPaint)
+                    }
+                    if (j == 0 || !isMur(j - 1, i)) {
+                        // Dessiner le bord gauche
+                        canvas.drawRect(left.toFloat(), top.toFloat(), left.toFloat(), (top + caseHeight).toFloat() , borderPaint)
+                    }
+                    if (i == nbLignes - 1 || !isMur(j, i + 1)) {
+                        // Dessiner le bord inférieur
+                        canvas.drawRect(left.toFloat(), (top + caseHeight).toFloat() , (left + caseWidth).toFloat() , (top + caseHeight).toFloat(), borderPaint)
+                    }
+                    if (j == nbColonnes - 1 || !isMur(j + 1, i)) {
+                        // Dessiner le bord droit
+                        canvas.drawRect((left + caseWidth).toFloat() , top.toFloat(), (left + caseWidth).toFloat(), (top + caseHeight).toFloat(), borderPaint)
+                    }
+                }
+            }
+        }
     }
 
-    fun spawnPacMan(pacMan: PacMan) {
-        if (pacMan.dead) {
-            pacMan.setPosition(12, 19)
-        }
-                }
+
+
 }

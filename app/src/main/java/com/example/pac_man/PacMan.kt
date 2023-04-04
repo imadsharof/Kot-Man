@@ -5,51 +5,67 @@ import android.content.res.Resources
 import android.graphics.*
 import android.view.SurfaceView
 
-class PacMan(private val resources: Resources, val caseWidth: Int, val caseHeight: Int){
-
+class PacMan(
+    private val resources: Resources,
+    private val caseWidth: Int,
+    private val caseHeight: Int,
+    private val screenWidth: Int,
+    private val screenHeight: Int
+) {
     private val pacManBitmap: Bitmap
-    private var posX: Int = 0 // Coordonnée X de la position du Pac-Man
-    private var posY: Int = 0 // Coordonnée Y de la position du Pac-Man
-    var dead = true
+    var posX: Int = 0
+    var posY: Int = 0
+    var direction: Direction = Direction.NONE
 
     init {
-        val originalBitmap = BitmapFactory.decodeResource(resources, R.drawable.kotlinlogo)
-        pacManBitmap = Bitmap.createScaledBitmap(originalBitmap, caseWidth, caseHeight, true)
+        val pacManOriginal = BitmapFactory.decodeResource(resources, R.drawable.kotlinlogo)
+        pacManBitmap = Bitmap.createScaledBitmap(pacManOriginal, caseWidth, caseHeight, true)
+    }
+
+    enum class Direction {
+        NONE,
+        UP,
+        DOWN,
+        LEFT,
+        RIGHT
+    }
+
+    fun spawnPacMan() {
+        // Initialise la position de Pac-Man dans le labyrinthe
+        posX = 13 * caseWidth
+        posY = 17 * caseHeight
+    }
+
+    fun update(labyrinthe: Labyrinthe) {
+        when (direction) {
+            Direction.NONE -> {
+                // Ne bouge pas
+            }
+            Direction.UP -> {
+                if (!labyrinthe.isMur((posX / caseWidth), (posY / caseHeight) - 1)) {
+                    posY -= caseHeight
+                }
+            }
+            Direction.DOWN -> {
+                if (!labyrinthe.isMur((posX / caseWidth), (posY / caseHeight) + 1)) {
+                    posY += caseHeight
+                }
+            }
+            Direction.LEFT -> {
+                if (!labyrinthe.isMur((posX / caseWidth) - 1, (posY / caseHeight))) {
+                    posX -= caseWidth
+                }
+            }
+            Direction.RIGHT -> {
+                if (!labyrinthe.isMur((posX / caseWidth) + 1, (posY / caseHeight))) {
+                    posX += caseWidth
+                }
+            }
+        }
     }
 
     fun draw(canvas: Canvas) {
         canvas.drawBitmap(pacManBitmap, posX.toFloat(), posY.toFloat(), null)
     }
-
-    fun setPosition(x: Int, y: Int) {
-        posX = x * caseWidth
-        posY = y * caseHeight
-    }
 }
-    // code mis en commentaire
-    /*private val paint = Paint()
-    private var currentFrame = 0
-    private var direction = 0 // 0: droite, 1: gauche
 
-    private val pacmanFrames = arrayOfNulls<Bitmap>(6)
-
-    init {
-        pacmanFrames[0] = BitmapFactory.decodeResource(surfaceView.resources, R.drawable.pacman_droite_ouvregrand_bouche)
-        pacmanFrames[1] = BitmapFactory.decodeResource(surfaceView.resources, R.drawable.pacman_droite_ouvre_bouche)
-        pacmanFrames[2] = BitmapFactory.decodeResource(surfaceView.resources, R.drawable.pacman_ferme_bouche)
-        pacmanFrames[3] = BitmapFactory.decodeResource(surfaceView.resources, R.drawable.pacman_gauche_ouvregrand_bouche)
-        pacmanFrames[4] = BitmapFactory.decodeResource(surfaceView.resources, R.drawable.pacman_gauche_ouvre_bouche)
-        pacmanFrames[5] = BitmapFactory.decodeResource(surfaceView.resources, R.drawable.pacman_ferme_bouche)
-    }
-
-    fun draw(canvas: Canvas, x: Float, y: Float) {
-        canvas.drawBitmap(pacmanFrames[currentFrame]!!, x, y, paint)
-    }
-
-    fun update(animationSpeed: Long) {
-        currentFrame = (currentFrame + 1) % 3 + direction * 3
-    }
-
-    fun changeDirection(newDirection: Int) {
-        direction = newDirection
-    }*/
