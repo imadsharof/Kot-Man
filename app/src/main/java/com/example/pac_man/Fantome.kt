@@ -23,11 +23,11 @@ open class Fantome(
     private val scale = 1 // Ajustez ce facteur de mise à l'échelle selon vos besoins
     private val newWidth = (caseWidth * scale).toInt()
     private val newHeight = (caseHeight * scale).toInt()
+    private val speed = 10
 
     var direction: PacMan.Direction = PacMan.Direction.NONE
 
-    private val moveJob = Job()
-    private val moveScope = CoroutineScope(Dispatchers.Main + moveJob)
+
     init {
         val fantomeOriginal = BitmapFactory.decodeResource(resources, fantomeDrawable) // Ajoutez votre image de fantôme ici
         fantomeBitmap = Bitmap.createScaledBitmap(fantomeOriginal, newWidth, newHeight, true)
@@ -43,18 +43,7 @@ open class Fantome(
         canvas.drawBitmap(fantomeBitmap, posX.toFloat(), posY.toFloat(), null)
     }
 
-    fun startMoving(map: Array<IntArray>) {
-        moveScope.launch {
-            while (true) {
-                moveRandomly(map)
-                kotlinx.coroutines.delay(2000) // Contrôle la vitesse de déplacement du fantôme
-            }
-        }
-    }
 
-    fun stopMoving() {
-        moveJob.cancel()
-    }
 
     fun moveRandomly(map: Array<IntArray>) {
         val possibleDirections = mutableListOf<PacMan.Direction>()

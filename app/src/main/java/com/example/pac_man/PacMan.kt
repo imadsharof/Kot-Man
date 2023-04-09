@@ -1,10 +1,16 @@
 package com.example.pac_man
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.res.Resources
 import android.graphics.*
 import android.util.Log
 import android.view.SurfaceView
+import androidx.core.content.ContextCompat.startActivity
+
+import java.lang.Math.abs
+
 
 class PacMan(
     private val resources: Resources,
@@ -17,6 +23,8 @@ class PacMan(
     var posX: Int = 0
     var posY: Int = 0
     var direction: Direction = Direction.NONE
+    private lateinit var fantome: Fantome
+
 
 
     init {
@@ -38,7 +46,8 @@ class PacMan(
         posY = 17 * caseHeight
     }
 
-    fun update(labyrinthe: Labyrinthe, score: Score) {
+
+    fun update(labyrinthe: Labyrinthe, score: Score,fantomes: List<Fantome>,life: Life) {
         when (direction) {
             Direction.NONE -> {
                 // Ne bouge pas
@@ -68,10 +77,52 @@ class PacMan(
 
         val pointsGained = eatPoint(labyrinthe)
         score.incrementScore(pointsGained)
+        teleport(labyrinthe)
+        checkCollisionsWithGhosts(fantomes, life)
 
-        // Vérifiez si Pac-Man touche un fantôme vert
 
     }
+
+    fun teleport(labyrinthe: Labyrinthe) {
+        val i = posY / caseHeight
+        val j = posX / caseWidth
+        if (labyrinthe.map[i][j] == 6) {
+            // Trouve la position de la case 7
+            for (x in labyrinthe.map.indices) {
+                for (y in labyrinthe.map[x].indices) {
+                    if (labyrinthe.map[x][y] == 7) {
+                        posX = y * caseWidth
+                        posY = x * caseHeight
+                        return
+                    }
+                }
+            }
+        } else if (labyrinthe.map[i][j] == 7) {
+            // Trouve la position de la case 6
+            for (x in labyrinthe.map.indices) {
+                for (y in labyrinthe.map[x].indices) {
+                    if (labyrinthe.map[x][y] == 6) {
+                        posX = y * caseWidth
+                        posY = x * caseHeight
+                        return
+                    }
+                }
+            }
+        }
+
+    }
+
+    private fun checkCollisionsWithGhosts(fantomes: List<Fantome>, life: Life) {
+        for (fantome in fantomes) {
+            if (abs(posX - fantome.posX) <= caseWidth / 4 && abs(posY - fantome.posY) <= caseHeight / 4) {
+                life.decreaseLife()
+            }
+
+        }
+    }
+
+
+
 
     fun draw(canvas: Canvas) {
         canvas.drawBitmap(pacManBitmap, posX.toFloat(), posY.toFloat(), null)
@@ -83,7 +134,7 @@ class PacMan(
 
         if (labyrinthe.map[i][j] == 2 || labyrinthe.map[i][j] == 4) {
             labyrinthe.map[i][j] = 0
-            return 1
+            return 10
         } else {
             return 0
         }

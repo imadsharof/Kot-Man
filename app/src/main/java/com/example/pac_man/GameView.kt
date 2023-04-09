@@ -1,6 +1,7 @@
 package com.example.pac_man
 
 
+import android.app.Activity
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Canvas
@@ -13,7 +14,7 @@ import android.view.SurfaceView
 import java.lang.Math.abs
 
 
-class GameView @JvmOverloads constructor (context: Context, attributes: AttributeSet? = null, defStyleAttr: Int = 0): SurfaceView(context, attributes,defStyleAttr), Runnable, SurfaceHolder.Callback  {
+class GameView @JvmOverloads constructor (context: Context, attributes: AttributeSet? = null, defStyleAttr: Int = 0): SurfaceView(context, attributes,defStyleAttr), Runnable, SurfaceHolder.Callback {
 
     lateinit var canvas : Canvas
     private lateinit var thread : Thread
@@ -27,6 +28,7 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
 
     private val pacMan: PacMan
     private val labyrinthe: Labyrinthe
+    private val life: Life
     private var pointGris: PointGris
     private var pointBonus : PointBonus
 
@@ -47,16 +49,19 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
 
 
 
+
     init {
+        val activity = context as Activity
+
         labyrinthe = Labyrinthe(resources, caseWidth, caseHeight)
         pacMan = PacMan(resources, caseWidth, caseHeight,screenWidth,screenHeight)
         pacMan.spawnPacMan() // Initialise la position de Pac-Man dans le labyrinthe
         pointGris = PointGris(resources, caseWidth, caseHeight)
         pointBonus = PointBonus(resources, caseWidth, caseHeight)// Initialise l'instance de Point.
+        life = Life(resources, screenWidth,activity)
 
         for ( i in 0 until 4) {
             fantomes[i].spawnFantome()
-            fantomes[i].startMoving(labyrinthe.map)
         }
     }
 
@@ -121,6 +126,7 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
             for ( i in 0 until 4) { fantomes[i].draw(canvas)}
 
             score.draw(canvas)
+            life.draw(canvas)
 
             val elapsedTime = System.currentTimeMillis() - startTime
             timeDisplay.drawTime(canvas, elapsedTime)
@@ -130,13 +136,18 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
         }
     }
 
+    private fun update() {
+        pacMan.update(labyrinthe, score,fantomes,life)
+        for ( i in 0 until 4) {
+            fantomes[i].moveRandomly(labyrinthe.map)
+
+        }
+    }
     override fun run() {
         while(drawing) {
-            pacMan.update(labyrinthe,score)
-
-            for ( i in 0 until 4) { fantomes[i].moveRandomly(labyrinthe.map)}
+            update()
             draw()
-            Thread.sleep(300) // Contrôle la vitesse de déplacement de Pac-Man
+            Thread.sleep(200) // Contrôle la vitesse de déplacement
 
         }
     }
