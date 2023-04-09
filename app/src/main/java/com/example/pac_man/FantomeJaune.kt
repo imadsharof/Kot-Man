@@ -10,7 +10,7 @@ class FantomeJaune(
 
     override fun spawnFantome() {
         // Initialise la position du fantôme vert dans le labyrinthe
-        posX = 13 * caseWidth
+        posX = 14 * caseWidth
         posY = 13 * caseHeight
     }
 }

@@ -81,14 +81,10 @@ class PacMan(
         val i = posY / caseHeight
         val j = posX / caseWidth
 
-        Log.d("eatPoint", "i: $i, j: $j, map[i][j]: ${labyrinthe.map[i][j]}")
-
         if (labyrinthe.map[i][j] == 2 || labyrinthe.map[i][j] == 4) {
             labyrinthe.map[i][j] = 0
-            Log.d("eatPoint", "Pac-Man a mangé un point gris. Retourne 1.")
             return 1
         } else {
-            Log.d("eatPoint", "Pac-Man n'a pas mangé de point gris. Retourne 0.")
             return 0
         }
     }

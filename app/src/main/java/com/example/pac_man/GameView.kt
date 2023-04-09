@@ -54,7 +54,7 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
         pointGris = PointGris(resources, caseWidth, caseHeight)
         pointBonus = PointBonus(resources, caseWidth, caseHeight)// Initialise l'instance de Point.
 
-        for ( i in 0 until 3) {
+        for ( i in 0 until 4) {
             fantomes[i].spawnFantome()
             fantomes[i].startMoving(labyrinthe.map)
         }
@@ -118,7 +118,7 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
             pointGris.draw(canvas, labyrinthe.map)
             pointBonus.draw(canvas, labyrinthe.map)
 
-            for ( i in 0 until 3) { fantomes[i].draw(canvas)}
+            for ( i in 0 until 4) { fantomes[i].draw(canvas)}
 
             score.draw(canvas)
 
@@ -133,7 +133,8 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
     override fun run() {
         while(drawing) {
             pacMan.update(labyrinthe,score)
-            fantomeVert.moveRandomly(labyrinthe.map)
+
+            for ( i in 0 until 4) { fantomes[i].moveRandomly(labyrinthe.map)}
             draw()
             Thread.sleep(300) // Contrôle la vitesse de déplacement de Pac-Man
 
