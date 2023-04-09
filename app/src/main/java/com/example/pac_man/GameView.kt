@@ -1,11 +1,11 @@
 package com.example.pac_man
 
+
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.PorterDuff
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.SurfaceHolder
@@ -13,7 +13,7 @@ import android.view.SurfaceView
 import java.lang.Math.abs
 
 
-class GameView @JvmOverloads constructor (context: Context, attributes: AttributeSet? = null, defStyleAttr: Int = 0): SurfaceView(context, attributes,defStyleAttr), Runnable, SurfaceHolder.Callback {
+class GameView @JvmOverloads constructor (context: Context, attributes: AttributeSet? = null, defStyleAttr: Int = 0): SurfaceView(context, attributes,defStyleAttr), Runnable, SurfaceHolder.Callback  {
 
     lateinit var canvas : Canvas
     private lateinit var thread : Thread
@@ -27,16 +27,40 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
 
     private val pacMan: PacMan
     private val labyrinthe: Labyrinthe
+    private var pointGris: PointGris
+    private var pointBonus : PointBonus
+
+    private val timeDisplay: TimeDisplay = DrawTime(resources)
+    private var startTime = System.currentTimeMillis()
+
+    private val score = Score(context, screenWidth)
 
     private var initialX = 0f
     private var initialY = 0f
-    private var lastUpdateTime: Long = 0
+
+    val fantomeVert = FantomeVert(resources, caseWidth, caseHeight)
+    val fantomeRouge = FantomeRouge(resources, caseWidth, caseHeight)
+    val fantomeBleu = FantomeBleu(resources, caseWidth, caseHeight)
+    val fantomeJaune = FantomeJaune(resources, caseWidth, caseHeight)
+
+    val fantomes = arrayListOf(fantomeVert, fantomeRouge, fantomeBleu, fantomeJaune)
+
+
 
     init {
         labyrinthe = Labyrinthe(resources, caseWidth, caseHeight)
         pacMan = PacMan(resources, caseWidth, caseHeight,screenWidth,screenHeight)
         pacMan.spawnPacMan() // Initialise la position de Pac-Man dans le labyrinthe
+        pointGris = PointGris(resources, caseWidth, caseHeight)
+        pointBonus = PointBonus(resources, caseWidth, caseHeight)// Initialise l'instance de Point.
+
+        for ( i in 0 until 3) {
+            fantomes[i].spawnFantome()
+            fantomes[i].startMoving(labyrinthe.map)
+        }
     }
+
+
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         val currentX = event.x
@@ -91,7 +115,15 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
             clearCanvas() // Ajoutez cette ligne pour effacer le canvas
             labyrinthe.draw(canvas)
             pacMan.draw(canvas)
+            pointGris.draw(canvas, labyrinthe.map)
+            pointBonus.draw(canvas, labyrinthe.map)
 
+            for ( i in 0 until 3) { fantomes[i].draw(canvas)}
+
+            score.draw(canvas)
+
+            val elapsedTime = System.currentTimeMillis() - startTime
+            timeDisplay.drawTime(canvas, elapsedTime)
 
 
             holder.unlockCanvasAndPost(canvas)
@@ -100,7 +132,8 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
 
     override fun run() {
         while(drawing) {
-            pacMan.update(labyrinthe)
+            pacMan.update(labyrinthe,score)
+            fantomeVert.moveRandomly(labyrinthe.map)
             draw()
             Thread.sleep(300) // Contrôle la vitesse de déplacement de Pac-Man
 

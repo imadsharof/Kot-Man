@@ -3,6 +3,7 @@ package com.example.pac_man
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.*
+import android.util.Log
 import android.view.SurfaceView
 
 class PacMan(
@@ -16,6 +17,7 @@ class PacMan(
     var posX: Int = 0
     var posY: Int = 0
     var direction: Direction = Direction.NONE
+
 
     init {
         val pacManOriginal = BitmapFactory.decodeResource(resources, R.drawable.kotlinlogo)
@@ -36,7 +38,7 @@ class PacMan(
         posY = 17 * caseHeight
     }
 
-    fun update(labyrinthe: Labyrinthe) {
+    fun update(labyrinthe: Labyrinthe, score: Score) {
         when (direction) {
             Direction.NONE -> {
                 // Ne bouge pas
@@ -62,10 +64,34 @@ class PacMan(
                 }
             }
         }
+
+
+        val pointsGained = eatPoint(labyrinthe)
+        score.incrementScore(pointsGained)
+
+        // Vérifiez si Pac-Man touche un fantôme vert
+
     }
 
     fun draw(canvas: Canvas) {
         canvas.drawBitmap(pacManBitmap, posX.toFloat(), posY.toFloat(), null)
     }
+
+    fun eatPoint(labyrinthe: Labyrinthe): Int {
+        val i = posY / caseHeight
+        val j = posX / caseWidth
+
+        Log.d("eatPoint", "i: $i, j: $j, map[i][j]: ${labyrinthe.map[i][j]}")
+
+        if (labyrinthe.map[i][j] == 2 || labyrinthe.map[i][j] == 4) {
+            labyrinthe.map[i][j] = 0
+            Log.d("eatPoint", "Pac-Man a mangé un point gris. Retourne 1.")
+            return 1
+        } else {
+            Log.d("eatPoint", "Pac-Man n'a pas mangé de point gris. Retourne 0.")
+            return 0
+        }
+    }
+
 }
 
