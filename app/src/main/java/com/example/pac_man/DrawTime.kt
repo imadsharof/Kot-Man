@@ -10,7 +10,7 @@ import android.os.SystemClock
 
 class DrawTime(private val resources: Resources) : TimeDisplay {
 
-    private var startTime = System.currentTimeMillis()
+    private var startTime = System.currentTimeMillis() + 6000
 
     private val paint = Paint().apply {
         color = Color.WHITE
@@ -27,7 +27,7 @@ class DrawTime(private val resources: Resources) : TimeDisplay {
     }
 
     override fun resetTime() {
-        startTime = System.currentTimeMillis()
+        startTime = System.currentTimeMillis() + 6000
     }
 
 }

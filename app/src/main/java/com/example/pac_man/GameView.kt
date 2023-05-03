@@ -33,7 +33,7 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
     private var pointBonus : PointBonus
 
     private val timeDisplay: TimeDisplay = DrawTime(resources)
-    private var startTime = System.currentTimeMillis()
+    private var startTime = System.currentTimeMillis() + 6000
 
     private val score = Score(context, screenWidth)
 
@@ -47,6 +47,8 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
 
     val fantomes = arrayListOf(fantomeVert, fantomeRouge, fantomeBleu, fantomeJaune)
 
+    private var gameStarted = false
+
 
 
 
@@ -54,7 +56,7 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
         val activity = context as Activity
 
         labyrinthe = Labyrinthe(resources, caseWidth, caseHeight)
-        pacMan = PacMan(resources, caseWidth, caseHeight,screenWidth,screenHeight)
+        pacMan = PacMan(resources, caseWidth, caseHeight)
         pacMan.spawnPacMan() // Initialise la position de Pac-Man dans le labyrinthe
         pointGris = PointGris(resources, caseWidth, caseHeight)
         pointBonus = PointBonus(resources, caseWidth, caseHeight)// Initialise l'instance de Point.
@@ -104,6 +106,11 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
         return true
     }
 
+    fun startGame() {
+        gameStarted = true
+        // Effectuez ici toute initialisation supplémentaire dont vous avez besoin pour démarrer la partie
+    }
+
     private fun clearCanvas() {
         val backgroundColor = Color.BLACK
         val paint = Paint().apply {
@@ -144,13 +151,20 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
         }
     }
     override fun run() {
-        while(drawing) {
-            update()
-            draw()
-            Thread.sleep(200) // Contrôle la vitesse de déplacement
+        while (drawing) {
+            if (!holder.surface.isValid) {
+                continue
+            }
 
+            if (gameStarted) {
+                update()
+                draw()
+            }
+
+            Thread.sleep(200) // Contrôle la vitesse de déplacement
         }
     }
+
 
     fun pause() {
         drawing = false

@@ -1,0 +1,31 @@
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/compte1" android:duration="222"/>
+    <item android:drawable="@drawable/compte2" android:duration="222"/>
+    <item android:drawable="@drawable/compte3" android:duration="222"/>
+    <item android:drawable="@drawable/compte4" android:duration="222"/>
+    <item android:drawable="@drawable/compte5" android:duration="222"/>
+    <item android:drawable="@drawable/compte6" android:duration="222"/>
+    <item android:drawable="@drawable/compte7" android:duration="222"/>
+    <item android:drawable="@drawable/compte8" android:duration="222"/>
+    <item android:drawable="@drawable/compte9" android:duration="222"/>
+    <item android:drawable="@drawable/compte10" android:duration="222"/>
+    <item android:drawable="@drawable/compte11" android:duration="222"/>
+    <item android:drawable="@drawable/compte11" android:duration="222"/>
+    <item android:drawable="@drawable/compte12" android:duration="222"/>
+    <item android:drawable="@drawable/compte13" android:duration="222"/>
+    <item android:drawable="@drawable/compte14" android:duration="222"/>
+    <item android:drawable="@drawable/compte15" android:duration="222"/>
+    <item android:drawable="@drawable/compte16" android:duration="222"/>
+    <item android:drawable="@drawable/compte17" android:duration="222"/>
+    <item android:drawable="@drawable/compte18" android:duration="222"/>
+    <item android:drawable="@drawable/compte19" android:duration="222"/>
+    <item android:drawable="@drawable/compte20" android:duration="222"/>
+    <item android:drawable="@drawable/compte21" android:duration="222"/>
+    <item android:drawable="@drawable/compte22" android:duration="222"/>
+    <item android:drawable="@drawable/compte23" android:duration="222"/>
+    <item android:drawable="@drawable/compte24" android:duration="222"/>
+    <item android:drawable="@drawable/compte25" android:duration="222"/>
+    <item android:drawable="@drawable/compte26" android:duration="222"/>
+    <item android:drawable="@drawable/compte27" android:duration="222"/>
+
+</animation-list>

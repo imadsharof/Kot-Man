@@ -18,16 +18,17 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/menu" />
 
-    <Button
+    <ImageButton
         android:id="@+id/button"
-        android:layout_width="104dp"
-        android:layout_height="82dp"
-        android:text="Play"
+        android:layout_width="210dp"
+        android:layout_height="123dp"
+        android:background="@drawable/animated_button"
+        android:rotationY="-90"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.374"
+        app:layout_constraintHorizontal_bias="0.335"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.762" />
+        app:layout_constraintVertical_bias="0.781" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

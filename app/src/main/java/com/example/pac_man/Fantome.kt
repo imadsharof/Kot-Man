@@ -21,9 +21,8 @@ open class Fantome(
     var posY: Int = 0
 
     private val scale = 1 // Ajustez ce facteur de mise à l'échelle selon vos besoins
-    private val newWidth = (caseWidth * scale).toInt()
-    private val newHeight = (caseHeight * scale).toInt()
-    private val speed = 10
+    val newWidth = (caseWidth * scale).toInt()
+    val newHeight = (caseHeight * scale).toInt()
 
     var direction: PacMan.Direction = PacMan.Direction.NONE
 
