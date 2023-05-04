@@ -3,14 +3,15 @@ package com.example.pac_man
 import android.content.res.Resources
 import android.graphics.*
 
-class Labyrinthe(private val resources: Resources, val caseWidth: Int, val caseHeight: Int) {
+class Labyrinthe(private val resources: Resources, val caseWidth: Float, val caseHeight: Float) {
 
 
     private val wallBitmap: Bitmap
 
     init {
         val wallOriginal = BitmapFactory.decodeResource(resources, R.drawable.binaire)
-        wallBitmap = Bitmap.createScaledBitmap(wallOriginal, caseWidth, caseHeight, true)
+        wallBitmap = Bitmap.createScaledBitmap(wallOriginal, caseWidth.toInt(),
+            caseHeight.toInt(), true)
     }
 
     companion object {
@@ -53,27 +54,27 @@ class Labyrinthe(private val resources: Resources, val caseWidth: Int, val caseH
         intArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
         intArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
         intArrayOf(0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0),
-        intArrayOf(0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0, 0),
+        intArrayOf(0, 0, 1, 7, 2, 2, 2, 7, 2, 2, 2, 7, 1, 7, 2, 2, 2, 7, 2, 2, 2, 7, 1, 0, 0),
         intArrayOf(0, 0, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 0, 0),
         intArrayOf(0, 0, 1, 4, 1, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 1, 4, 1, 0, 0),
-        intArrayOf(0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0, 0),
+        intArrayOf(0, 0, 1, 7, 2, 2, 2, 7, 2, 7, 2, 7, 2, 7, 2, 7, 2, 7, 2, 2, 2, 7, 1, 0, 0),
         intArrayOf(0, 0, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 0, 0),
-        intArrayOf(0, 0, 1, 2, 2, 2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 2, 2, 1, 0, 0),
+        intArrayOf(0, 0, 1, 7, 2, 2, 2, 7, 1, 7, 2, 7, 1, 7, 2, 7, 1, 7, 2, 2, 2, 7, 1, 0, 0),
         intArrayOf(0, 0, 1, 1, 1, 1, 1, 2, 1, 3, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 0, 0),
-        intArrayOf(0, 0, 0, 0, 0, 0, 1, 2, 1, 3, 3, 3, 3, 3, 3, 3, 1, 2, 1, 0, 0, 0, 0, 0, 0),
+        intArrayOf(0, 0, 0, 0, 0, 0, 1, 2, 1, 8, 3, 8, 3, 8, 3, 8, 1, 2, 1, 0, 0, 0, 0, 0, 0),
         intArrayOf(0, 0, 1, 1, 1, 1, 1, 2, 1, 3, 1, 1, 3, 1, 1, 3, 1, 2, 1, 1, 1, 1, 1, 0, 0),
-        intArrayOf(0, 0, 6, 2, 2, 2, 5, 2, 1, 3, 1, 3, 3, 3, 1, 3, 2, 2, 5, 2, 2, 2, 7, 0, 0),
+        intArrayOf(0, 0, 6, 2, 2, 2, 5, 7, 1, 3, 1, 3, 3, 3, 1, 8, 2, 7, 5, 2, 2, 2, 9, 0, 0),
         intArrayOf(0, 0, 1, 1, 1, 1, 1, 2, 1, 3, 1, 3, 3, 3, 1, 3, 1, 2, 1, 1, 1, 1, 1, 0, 0),
         intArrayOf(0, 0, 0, 0, 0, 0, 1, 2, 1, 3, 1, 1, 1, 1, 1, 3, 1, 2, 1, 0, 0, 0, 0, 0, 0),
-        intArrayOf(0, 0, 0, 0, 0, 0, 1, 2, 1, 3, 3, 3, 3, 3, 3, 3, 1, 2, 1, 0, 0, 0, 0, 0, 0),
+        intArrayOf(0, 0, 0, 0, 0, 0, 1, 2, 1, 8, 3, 3, 3, 3, 3, 8, 1, 2, 1, 0, 0, 0, 0, 0, 0),
         intArrayOf(0, 0, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 0, 0),
-        intArrayOf(0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0, 0),
+        intArrayOf(0, 0, 1, 7, 2, 2, 2, 7, 2, 7, 2, 7, 1, 7, 2, 7, 2, 7, 2, 2, 2, 7, 1, 0, 0),
         intArrayOf(0, 0, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 0, 0),
-        intArrayOf(0, 0, 1, 4, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 2, 4, 1, 0, 0),
+        intArrayOf(0, 0, 1, 4, 7, 1, 1, 7, 2, 7, 2, 7, 2, 7, 2, 7, 2, 7, 1, 1, 7, 4, 1, 0, 0),
         intArrayOf(0, 0, 1, 1, 2, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 2, 1, 1, 0, 0),
-        intArrayOf(0, 0, 1, 2, 2, 2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 2, 2, 1, 0, 0),
+        intArrayOf(0, 0, 1, 7, 2, 2, 2, 7, 1, 2, 2, 2, 1, 7, 2, 7, 1, 7, 2, 2, 2, 7, 1, 0, 0),
         intArrayOf(0, 0, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1, 0, 0),
-        intArrayOf(0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0, 0),
+        intArrayOf(0, 0, 1, 7, 2, 2, 2, 2, 2, 2, 2, 7, 2, 7, 2, 2, 2, 2, 2, 2, 2, 7, 1, 0, 0),
         intArrayOf(0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0),
         intArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
         intArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
@@ -113,15 +114,33 @@ class Labyrinthe(private val resources: Resources, val caseWidth: Int, val caseH
     val nbLignes = map.size
     val nbColonnes = map[0].size
 
-    fun isMur(x: Int, y: Int): Boolean {
+    fun isMur(x: Float, y: Float): Boolean {
         if (x < 0 || x >= nbColonnes || y < 0 || y >= nbLignes) {
             return true // les bords sont considérés comme des murs
         }
-        return map[y][x] == 1
+        return map[y.toInt()][x.toInt()] == 1
     }
 
+    fun isMur2(tileX: Float, tileY: Float): Boolean {
+        if (tileX < 0 || tileX >= nbColonnes || tileY < 0 || tileY >= nbLignes) {
+            return true // les bords sont considérés comme des murs
+        }
+        return map[tileY.toInt()][tileX.toInt()] == 1
+    }
 
+    fun isIntersection(tileX: Float, tileY: Float, map: Array<IntArray>) : Boolean {
+        return (map[tileY.toInt()][tileX.toInt()] == 7 ||
+                map[tileY.toInt()][tileX.toInt()] == 8 ||
+                map[tileY.toInt()][tileX.toInt()] == 11)
+    }
 
+    fun getmapvalue(tileX: Float, tileY: Float, map: Array<IntArray>): Int {
+        return map[tileY.toInt()][tileX.toInt()]
+    }
+
+    fun setmapvalue(tileX: Float, tileY: Float, map: Array<IntArray>, value: Int) {
+        map[tileY.toInt()][tileX.toInt()] = value
+    }
 
     // Fun draw dessine avec des briques
     /*fun draw(canvas: Canvas) {
@@ -155,24 +174,24 @@ class Labyrinthe(private val resources: Resources, val caseWidth: Int, val caseH
                 val left = j * caseWidth
                 val top = i * caseHeight
 
-                if (isMur(j, i)) {
+                if (isMur(j.toFloat(), i.toFloat())) {
                     // Dessiner le rectangle intérieur en noir
                     canvas.drawRect(left + borderWidth, top + borderWidth, left + caseWidth - borderWidth, top + caseHeight - borderWidth, paint)
 
                     // Dessiner les bords adjacents en bleu
-                    if (i == 0 || !isMur(j, i - 1)) {
+                    if (i == 0 || !isMur(j.toFloat(), (i - 1).toFloat())) {
                         // Dessiner le bord supérieur
                         canvas.drawRect(left.toFloat() , top.toFloat(), (left + caseWidth).toFloat() , top.toFloat(), borderPaint)
                     }
-                    if (j == 0 || !isMur(j - 1, i)) {
+                    if (j == 0 || !isMur((j - 1).toFloat(), i.toFloat())) {
                         // Dessiner le bord gauche
                         canvas.drawRect(left.toFloat(), top.toFloat(), left.toFloat(), (top + caseHeight).toFloat() , borderPaint)
                     }
-                    if (i == nbLignes - 1 || !isMur(j, i + 1)) {
+                    if (i == nbLignes - 1 || !isMur(j.toFloat(), (i + 1).toFloat())) {
                         // Dessiner le bord inférieur
                         canvas.drawRect(left.toFloat(), (top + caseHeight).toFloat() , (left + caseWidth).toFloat() , (top + caseHeight).toFloat(), borderPaint)
                     }
-                    if (j == nbColonnes - 1 || !isMur(j + 1, i)) {
+                    if (j == nbColonnes - 1 || !isMur((j + 1).toFloat(), i.toFloat())) {
                         // Dessiner le bord droit
                         canvas.drawRect((left + caseWidth).toFloat() , top.toFloat(), (left + caseWidth).toFloat(), (top + caseHeight).toFloat(), borderPaint)
                     }

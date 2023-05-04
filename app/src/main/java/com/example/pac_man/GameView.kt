@@ -7,11 +7,14 @@ import android.content.res.Resources
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.os.Handler
+import android.os.Looper
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import java.lang.Math.abs
+import kotlin.math.round
 
 
 class GameView @JvmOverloads constructor (context: Context, attributes: AttributeSet? = null, defStyleAttr: Int = 0): SurfaceView(context, attributes,defStyleAttr), Runnable, SurfaceHolder.Callback {
@@ -20,11 +23,11 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
     private lateinit var thread : Thread
     private var drawing = false
 
-    private val screenWidth = Resources.getSystem().displayMetrics.widthPixels
-    private val screenHeight = Resources.getSystem().displayMetrics.heightPixels
+    private val screenWidth = Resources.getSystem().displayMetrics.widthPixels.toFloat()
+    private val screenHeight = Resources.getSystem().displayMetrics.heightPixels.toFloat()
 
-    private val caseWidth = screenWidth / 25
-    private val caseHeight = screenHeight / 27
+    private val caseWidth : Float = screenWidth / 25
+    private val caseHeight : Float = screenHeight / 27
 
     private val pacMan: PacMan
     private val labyrinthe: Labyrinthe
@@ -49,14 +52,12 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
 
     private var gameStarted = false
 
-
-
-
+    private var lastDirection: PacMan.Direction = PacMan.Direction.NONE
     init {
         val activity = context as Activity
 
         labyrinthe = Labyrinthe(resources, caseWidth, caseHeight)
-        pacMan = PacMan(resources, caseWidth, caseHeight)
+        pacMan = PacMan(resources,caseWidth, caseHeight,labyrinthe)
         pacMan.spawnPacMan() // Initialise la position de Pac-Man dans le labyrinthe
         pointGris = PointGris(resources, caseWidth, caseHeight)
         pointBonus = PointBonus(resources, caseWidth, caseHeight)// Initialise l'instance de Point.
@@ -82,25 +83,49 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
                 val deltaX = currentX - initialX
                 val deltaY = currentY - initialY
 
-                if (abs(deltaX) > abs(deltaY)) {
-                    // Déplacement horizontal
-                    if (deltaX > 0) {
-                        // Déplacement vers la droite
-                        pacMan.direction = PacMan.Direction.RIGHT
-                    } else {
-                        // Déplacement vers la gauche
-                        pacMan.direction = PacMan.Direction.LEFT
-                    }
-                } else {
-                    // Déplacement vertical
-                    if (deltaY > 0) {
-                        // Déplacement vers le bas
-                        pacMan.direction = PacMan.Direction.DOWN
-                    } else {
-                        // Déplacement vers le haut
-                        pacMan.direction = PacMan.Direction.UP
-                    }
+                // Permettre a mon pacman les comebacks, gauche droite ou haut bas
+                val isOppositeDirection = when (lastDirection) {
+                    PacMan.Direction.LEFT -> abs(deltaX) > abs(deltaY) && deltaX > 0
+                    PacMan.Direction.RIGHT -> abs(deltaX) > abs(deltaY) && deltaX < 0
+                    PacMan.Direction.UP -> abs(deltaY) > abs(deltaX) && deltaY > 0
+                    PacMan.Direction.DOWN -> abs(deltaY) > abs(deltaX) && deltaY < 0
+                    else -> false
                 }
+
+                val epsilon = 0.001f
+                // Vérifie si Pac-Man est sur une case de la matrice
+                val isOnTileX = abs(pacMan.tileX - round(pacMan.tileX)) == 0F
+                val isOnTileY = abs(pacMan.tileY - round(pacMan.tileY)) == 0F
+
+                //val epsilonX = abs(pacMan.tileX/round(pacMan.tileX) - 1F)
+                //val epsilonY = abs(pacMan.tileY/round(pacMan.tileY) - 1F)
+
+                if ( isOppositeDirection || (isOnTileX && isOnTileY)) {
+                    if (abs(deltaX) > abs(deltaY)) {
+                        // Déplacement horizontal
+                        if (deltaX > 0) {
+                            // Déplacement vers la droite
+                            pacMan.direction = PacMan.Direction.RIGHT
+                        } else {
+                            // Déplacement vers la gauche
+                            pacMan.direction = PacMan.Direction.LEFT
+                        }
+                    } else {
+                        // Déplacement vertical
+                        if (deltaY > 0) {
+                            // Déplacement vers le bas
+                            pacMan.direction = PacMan.Direction.DOWN
+                        } else {
+                            // Déplacement vers le haut
+                            pacMan.direction = PacMan.Direction.UP
+                        }
+                    }
+                    lastDirection = pacMan.direction
+
+                    initialX = currentX
+                    initialY = currentY
+                }
+
             }
         }
         return true
@@ -131,7 +156,6 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
             pointBonus.draw(canvas, labyrinthe.map)
 
             for ( i in 0 until 4) { fantomes[i].draw(canvas)}
-
             score.draw(canvas)
             life.draw(canvas)
 
@@ -143,13 +167,14 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
         }
     }
 
-    private fun update() {
+   private fun update() {
         pacMan.update(labyrinthe, score,fantomes,life)
         for ( i in 0 until 4) {
-            fantomes[i].moveRandomly(labyrinthe.map)
-
+            fantomes[i].moveRandomly(labyrinthe)
         }
     }
+
+
     override fun run() {
         while (drawing) {
             if (!holder.surface.isValid) {
@@ -157,15 +182,19 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
             }
 
             if (gameStarted) {
+                // Calculez le temps écoulé depuis la dernière mise à jour
+
+                // Mettez à jour la position de Pac-Man en fonction du temps écoulé
                 update()
+                //pacMan.checkCollisionsWithGhosts(fantomes, life)
+
+                // Dessinez le labyrinthe et les autres éléments
                 draw()
             }
 
-            Thread.sleep(200) // Contrôle la vitesse de déplacement
         }
     }
-
-
+    //Thread.sleep(200) // Contrôle la vitesse de déplacement
     fun pause() {
         drawing = false
         thread.join()

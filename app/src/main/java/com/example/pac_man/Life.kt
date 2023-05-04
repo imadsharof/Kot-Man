@@ -6,7 +6,7 @@ import android.content.Intent
 import android.content.res.Resources
 import android.graphics.*
 
-class Life(private val resources: Resources, private val screenWidth: Int, private val currentActivity: Activity) {
+class Life(private val resources: Resources, private val screenWidth: Float, private val currentActivity: Activity) {
     private val lifeBitmap: Bitmap
     private val textPaint: Paint
     private val lifeSpacing: Int = 10 // Espace entre les images de vies

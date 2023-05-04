@@ -9,54 +9,64 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlin.math.ceil
 
 open class Fantome(
     private val resources: Resources,
-    val caseWidth: Int,
-    val caseHeight: Int,
+    val caseWidth: Float,
+    val caseHeight: Float,
     fantomeDrawable: Int
 ) {
     private val fantomeBitmap: Bitmap
-    var posX: Int = 0
-    var posY: Int = 0
+
+    var tileX : Float = 0F
+    var tileY : Float = 0F
+
+    var nextTileX = 0F
+    var nextTileY = 0F
+
+
+
+    val speed = 5 // La vitesse de déplacement des fantômes
 
     private val scale = 1 // Ajustez ce facteur de mise à l'échelle selon vos besoins
-    val newWidth = (caseWidth * scale).toInt()
-    val newHeight = (caseHeight * scale).toInt()
 
     var direction: PacMan.Direction = PacMan.Direction.NONE
 
+    private var updateCounter = 0
+    private val updateThreshold = 20
 
     init {
         val fantomeOriginal = BitmapFactory.decodeResource(resources, fantomeDrawable) // Ajoutez votre image de fantôme ici
-        fantomeBitmap = Bitmap.createScaledBitmap(fantomeOriginal, newWidth, newHeight, true)
+        fantomeBitmap = Bitmap.createScaledBitmap(fantomeOriginal, caseWidth.toInt(),  caseHeight.toInt(), true)
     }
 
     open fun spawnFantome() {
         // Initialise la position du fantôme dans le labyrinthe
-        posX = 11 * caseWidth
-        posY = 11 * caseHeight
+        tileX = 11F
+        tileY = 11F
     }
 
     fun draw(canvas: Canvas) {
-        canvas.drawBitmap(fantomeBitmap, posX.toFloat(), posY.toFloat(), null)
+        canvas.drawBitmap(fantomeBitmap, tileX*caseWidth, tileY*caseHeight, null)
     }
 
 
 
-    fun moveRandomly(map: Array<IntArray>) {
+    fun moveRandomly(labyrinthe: Labyrinthe) {
+
         val possibleDirections = mutableListOf<PacMan.Direction>()
 
-        if (posX - caseWidth >= 0 && map[posY / caseHeight][(posX - caseWidth) / caseWidth] != 1 && map[posY / caseHeight][(posX - caseWidth) / caseWidth] != 5 && direction != PacMan.Direction.RIGHT) {
+        if (!labyrinthe.isMur2(tileX - 1f, tileY) && direction != PacMan.Direction.RIGHT) {
             possibleDirections.add(PacMan.Direction.LEFT)
         }
-        if (posX + caseWidth < map[0].size * caseWidth && map[posY / caseHeight][(posX + caseWidth) / caseWidth] != 1 && map[posY / caseHeight][(posX + caseWidth) / caseWidth] != 5 && direction != PacMan.Direction.LEFT) {
+        if (!labyrinthe.isMur2(tileX + 1f, tileY) && direction != PacMan.Direction.LEFT) {
             possibleDirections.add(PacMan.Direction.RIGHT)
         }
-        if (posY - caseHeight >= 0 && map[(posY - caseHeight) / caseHeight][posX / caseWidth] != 1 && map[(posY - caseHeight) / caseHeight][posX / caseWidth] != 5 && direction != PacMan.Direction.DOWN) {
+        if (!labyrinthe.isMur2(tileX, tileY - 1f) && direction != PacMan.Direction.DOWN) {
             possibleDirections.add(PacMan.Direction.UP)
         }
-        if (posY + caseHeight < map.size * caseHeight && map[(posY + caseHeight) / caseHeight][posX / caseWidth] != 1 && map[(posY + caseHeight) / caseHeight][posX / caseWidth] != 5 && direction != PacMan.Direction.UP) {
+        if (!labyrinthe.isMur2(tileX, tileY + 1f) && direction != PacMan.Direction.UP) {
             possibleDirections.add(PacMan.Direction.DOWN)
         }
 
@@ -65,22 +75,37 @@ open class Fantome(
 
             when (randomDirection) {
                 PacMan.Direction.LEFT -> {
-                    posX -= caseWidth
-                    direction = PacMan.Direction.LEFT
+                    nextTileX = tileX - (1 / 16F)
+                    if (!labyrinthe.isMur2(nextTileX, tileY) && !labyrinthe.isMur2(ceil(tileX - 1F), tileY)) {
+                        tileX = nextTileX
+                        direction = PacMan.Direction.LEFT
+                    }
                 }
                 PacMan.Direction.RIGHT -> {
-                    posX += caseWidth
-                    direction = PacMan.Direction.RIGHT
+                    if (!labyrinthe.isMur2(tileX + 1F, tileY)) {
+                        nextTileX = tileX + (1 / 16F)
+                    }
+                    if (!labyrinthe.isMur2(nextTileX, tileY) && !labyrinthe.isMur2(tileX + 1F, tileY)) {
+                        tileX = nextTileX
+                        direction = PacMan.Direction.RIGHT
+                    }
                 }
                 PacMan.Direction.UP -> {
-                    posY -= caseHeight
-                    direction = PacMan.Direction.UP
+                    nextTileY = tileY - (1 / 16F)
+                    if (!labyrinthe.isMur2(tileX, nextTileY) && !labyrinthe.isMur2(tileX, ceil(tileY - 1F))) {
+                        tileY = nextTileY
+                        direction = PacMan.Direction.UP
+                    }
                 }
                 PacMan.Direction.DOWN -> {
-                    posY += caseHeight
-                    direction = PacMan.Direction.DOWN
+                    nextTileY = tileY + (1 / 16F)
+                    if (!labyrinthe.isMur2(tileX, nextTileY) && !labyrinthe.isMur2(tileX, tileY + 1F)) {
+                        tileY = nextTileY
+                        direction = PacMan.Direction.DOWN
+                    }
                 }
-                else -> { /* Ne rien faire */ }
+                else -> { /* Ne rien faire */
+                }
             }
         }
     }

@@ -3,7 +3,8 @@ package com.example.pac_man
 import android.content.res.Resources
 import android.graphics.Canvas
 
-class PointBonus (private val resources: Resources, caseWidth: Int, caseHeight: Int) : Point(resources, caseWidth, caseHeight) {
+class PointBonus (private val resources: Resources, caseWidth: Float, caseHeight: Float) : Point(resources, caseWidth, caseHeight) {
+
 
     init {
         paint.color = resources.getColor(R.color.pointColor) // Remplace 'R.color.dotColor' par la couleur de ton choix.
@@ -12,7 +13,7 @@ class PointBonus (private val resources: Resources, caseWidth: Int, caseHeight: 
     override fun draw(canvas: Canvas, map: Array<IntArray>) {
         for (i in map.indices) {
             for (j in map[i].indices) {
-                if (map[i][j] == 4) { // Remplace '4' par la valeur représentant un point dans ton tableau.
+                if (map[i][j] == 4) { // Remplace '4' par la valeur représentant un poFloat dans ton tableau.
                     canvas.drawCircle(
                         (j * caseWidth + caseWidth / 2).toFloat(),
                         (i * caseHeight + caseHeight / 2).toFloat(),

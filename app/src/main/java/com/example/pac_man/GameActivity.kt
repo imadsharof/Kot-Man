@@ -28,11 +28,13 @@ class GameActivity: AppCompatActivity() {
     }
     private val handler = Handler(Looper.getMainLooper())
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         gameView = findViewById(R.id.gameView)
+
 
         mediaPlayer = MediaPlayer.create(this, R.raw.gameaudio)
         mediaPlayer.isLooping = true

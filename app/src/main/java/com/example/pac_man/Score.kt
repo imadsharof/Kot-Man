@@ -6,7 +6,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Typeface
 
-class Score(private val context: Context, private val screenWidth: Int) {
+class Score(private val context: Context, private val screenWidth: Float) {
     private val paint = Paint().apply {
         textSize = 60f
         typeface = Typeface.DEFAULT_BOLD
