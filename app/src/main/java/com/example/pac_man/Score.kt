@@ -12,7 +12,7 @@ class Score(private val context: Context, private val screenWidth: Float) {
         typeface = Typeface.DEFAULT_BOLD
         color = Color.WHITE
     }
-    private var score = 0
+    var score = 0
 
     fun draw(canvas: Canvas) {
         val scoreText = "Score: $score"

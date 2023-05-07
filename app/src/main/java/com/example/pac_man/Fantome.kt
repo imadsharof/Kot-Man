@@ -10,35 +10,50 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlin.math.ceil
+import kotlin.math.round
 
-open class Fantome(
+abstract class Fantome(
     private val resources: Resources,
     val caseWidth: Float,
     val caseHeight: Float,
-    fantomeDrawable: Int
+    fantomeDrawable: Int,
+    scaryFantomeDrawable: Int
 ) {
     private val fantomeBitmap: Bitmap
+    private val scaryFantomeBitmap: Bitmap
 
-    var tileX : Float = 0F
-    var tileY : Float = 0F
+
+    var tileX: Float = 0F
+    var tileY: Float = 0F
 
     var nextTileX = 0F
     var nextTileY = 0F
 
+    var isExit = false
+    var isVisible = true
+    var isEaten = false
+
+    val speed = 1/16F // La vitesse de déplacement des fantômes
+    var isScary = false
 
 
-    val speed = 5 // La vitesse de déplacement des fantômes
 
-    private val scale = 1 // Ajustez ce facteur de mise à l'échelle selon vos besoins
+    var direction: PacMan.Direction = PacMan.Direction.UP
 
-    var direction: PacMan.Direction = PacMan.Direction.NONE
+    val possibleDirections = arrayListOf(
+        PacMan.Direction.LEFT, // 0
+        PacMan.Direction.RIGHT, //1
+        PacMan.Direction.UP,    //2
+        PacMan.Direction.DOWN   //3
+    )
 
-    private var updateCounter = 0
-    private val updateThreshold = 20
 
     init {
         val fantomeOriginal = BitmapFactory.decodeResource(resources, fantomeDrawable) // Ajoutez votre image de fantôme ici
-        fantomeBitmap = Bitmap.createScaledBitmap(fantomeOriginal, caseWidth.toInt(),  caseHeight.toInt(), true)
+        fantomeBitmap = Bitmap.createScaledBitmap(fantomeOriginal, caseWidth.toInt(), caseHeight.toInt(), true)
+
+        val scaryFantomeOriginal = BitmapFactory.decodeResource(resources, scaryFantomeDrawable)
+        scaryFantomeBitmap = Bitmap.createScaledBitmap(scaryFantomeOriginal, caseWidth.toInt(), caseHeight.toInt(), true)
     }
 
     open fun spawnFantome() {
@@ -47,66 +62,236 @@ open class Fantome(
         tileY = 11F
     }
 
-    fun draw(canvas: Canvas) {
-        canvas.drawBitmap(fantomeBitmap, tileX*caseWidth, tileY*caseHeight, null)
+    fun setPosition(newtileX : Float,newtileY: Float) {
+        tileX = newtileX
+        tileY = newtileY
     }
 
+    fun draw(canvas: Canvas) {
+        if(isVisible){
+        if(!isScary){ canvas.drawBitmap(fantomeBitmap, tileX * caseWidth, tileY * caseHeight, null)}
+        else{ canvas.drawBitmap(scaryFantomeBitmap, tileX * caseWidth, tileY * caseHeight, null) }}
+    }
 
+    fun reverseDirection() {
+        direction = when(direction) {
+            PacMan.Direction.UP -> PacMan.Direction.DOWN
+            PacMan.Direction.DOWN -> PacMan.Direction.UP
+            PacMan.Direction.LEFT -> PacMan.Direction.RIGHT
+            PacMan.Direction.RIGHT -> PacMan.Direction.LEFT
+            else -> direction
+        }
+    }
+
+    fun updateGhostVisibility() {
+        // Si Pac-Man ne peut plus manger les fantômes effrayés
+        if (!isScary) {
+            isVisible = true
+        }
+    }
 
     fun moveRandomly(labyrinthe: Labyrinthe) {
+        if (isExit) {
+            updatemove(labyrinthe)
+        } else {
+            val murH = labyrinthe.isMur2(tileX, ceil(tileY - 1F))
+            val murB = labyrinthe.isMur2(tileX, tileY + 1F)
+            val murG = labyrinthe.isMur2(ceil(tileX - 1F), tileY)
+            val murD = labyrinthe.isMur2(tileX + 1F, tileY)
 
-        val possibleDirections = mutableListOf<PacMan.Direction>()
-
-        if (!labyrinthe.isMur2(tileX - 1f, tileY) && direction != PacMan.Direction.RIGHT) {
-            possibleDirections.add(PacMan.Direction.LEFT)
-        }
-        if (!labyrinthe.isMur2(tileX + 1f, tileY) && direction != PacMan.Direction.LEFT) {
-            possibleDirections.add(PacMan.Direction.RIGHT)
-        }
-        if (!labyrinthe.isMur2(tileX, tileY - 1f) && direction != PacMan.Direction.DOWN) {
-            possibleDirections.add(PacMan.Direction.UP)
-        }
-        if (!labyrinthe.isMur2(tileX, tileY + 1f) && direction != PacMan.Direction.UP) {
-            possibleDirections.add(PacMan.Direction.DOWN)
-        }
-
-        if (possibleDirections.isNotEmpty()) {
-            val randomDirection = possibleDirections[Random.nextInt(possibleDirections.size)]
-
-            when (randomDirection) {
-                PacMan.Direction.LEFT -> {
-                    nextTileX = tileX - (1 / 16F)
-                    if (!labyrinthe.isMur2(nextTileX, tileY) && !labyrinthe.isMur2(ceil(tileX - 1F), tileY)) {
-                        tileX = nextTileX
-                        direction = PacMan.Direction.LEFT
-                    }
-                }
-                PacMan.Direction.RIGHT -> {
-                    if (!labyrinthe.isMur2(tileX + 1F, tileY)) {
-                        nextTileX = tileX + (1 / 16F)
-                    }
-                    if (!labyrinthe.isMur2(nextTileX, tileY) && !labyrinthe.isMur2(tileX + 1F, tileY)) {
-                        tileX = nextTileX
-                        direction = PacMan.Direction.RIGHT
-                    }
-                }
-                PacMan.Direction.UP -> {
-                    nextTileY = tileY - (1 / 16F)
-                    if (!labyrinthe.isMur2(tileX, nextTileY) && !labyrinthe.isMur2(tileX, ceil(tileY - 1F))) {
-                        tileY = nextTileY
-                        direction = PacMan.Direction.UP
-                    }
-                }
-                PacMan.Direction.DOWN -> {
-                    nextTileY = tileY + (1 / 16F)
-                    if (!labyrinthe.isMur2(tileX, nextTileY) && !labyrinthe.isMur2(tileX, tileY + 1F)) {
-                        tileY = nextTileY
-                        direction = PacMan.Direction.DOWN
-                    }
-                }
-                else -> { /* Ne rien faire */
+            // Création d'une fonction imbriquée car sans ca j'avais que des conditions if qui s'enchaînaient
+            fun updateDirectionIfBothMurs(mur1: Boolean, mur2: Boolean, newDirection: PacMan.Direction) {
+                if (mur1 && mur2) {
+                    direction = newDirection
                 }
             }
+
+            updateDirectionIfBothMurs(murH, murD, PacMan.Direction.LEFT)
+            updateDirectionIfBothMurs(murH, murG, PacMan.Direction.DOWN)
+            updateDirectionIfBothMurs(murB, murG, PacMan.Direction.RIGHT)
+            updateDirectionIfBothMurs(murB, murD, PacMan.Direction.UP)
+
+            // Si fantome touche le 15
+            if (!isExit && tileX == 12F && tileY == 12F) {
+                direction = PacMan.Direction.UP
+                isExit = true
+            }
+        }
+
+        when (direction) {
+            PacMan.Direction.UP -> {
+                nextTileY = tileY - speed
+                if (!labyrinthe.isMur2(tileX, nextTileY)&& !labyrinthe.isMur2(tileX ,ceil(tileY - 1F)) ) {
+                    tileY = nextTileY
+                }
+
+            }
+            PacMan.Direction.DOWN -> {
+                nextTileY = tileY +speed
+                if (!labyrinthe.isMur2(tileX, nextTileY) && !labyrinthe.isMur2(tileX ,tileY + 1F)) {
+                    tileY = nextTileY
+                }
+            }
+            PacMan.Direction.LEFT -> {
+                nextTileX = tileX - speed
+                if (!labyrinthe.isMur2(nextTileX, tileY) && !labyrinthe.isMur2(ceil(tileX - 1F),tileY)) {
+                    tileX = nextTileX
+                }
+
+            }
+            PacMan.Direction.RIGHT -> {
+                if(!labyrinthe.isMur2(tileX + 1F,tileY)){
+                    nextTileX = tileX + speed}
+                if (!labyrinthe.isMur2(nextTileX, tileY) && !labyrinthe.isMur2(tileX + 1F,tileY)) {
+                    tileX = nextTileX
+                }
+
+            }
+            else -> { /* Ne rien faire */
+            }
+        }
+    }
+
+    fun updatemove(labyrinthe: Labyrinthe){
+        if (direction == PacMan.Direction.UP){
+            if(labyrinthe.isMur2(tileX ,ceil(tileY - 1F)) && !labyrinthe.isMur2(ceil(tileX - 1F),tileY) && !labyrinthe.isMur2(tileX + 1F,tileY)){
+
+                val randomNumber1 = (0..1).random()
+                direction = possibleDirections[randomNumber1]
+            }
+            else if (labyrinthe.isMur2(tileX ,ceil(tileY - 1F)) && labyrinthe.isMur2(ceil(tileX - 1F),tileY)){
+                direction = PacMan.Direction.RIGHT
+            }
+            else if (labyrinthe.isMur2(tileX ,ceil(tileY - 1F)) && labyrinthe.isMur2(tileX + 1F,tileY)){
+                direction = PacMan.Direction.LEFT
+            }
+
+            // Si fantome touche une inter proba qu'il tourne a gauche ou droite
+            val randomNumber5 = (0..1).random()
+            if(randomNumber5 == 0 &&
+               labyrinthe.isIntersectiondouze(tileX,tileY,labyrinthe.map)&&
+                (tileX % 1 == 0f && tileY %1 == 0f)
+                )
+            {
+                val randomNumber6 = (0..1).random()
+                direction = possibleDirections[randomNumber6]
+            }
+        }
+
+        else if (direction == PacMan.Direction.DOWN ) {
+            if(labyrinthe.isMur2(tileX ,tileY + 1F) && !labyrinthe.isMur2(ceil(tileX - 1F),tileY) && !labyrinthe.isMur2(tileX + 1F,tileY)){
+                val randomNumber2 = (0..1).random()
+                direction = possibleDirections[randomNumber2]
+            }
+            else if (labyrinthe.isMur2(ceil(tileX - 1F),tileY) && labyrinthe.isMur2(tileX ,tileY + 1F)){
+                direction = PacMan.Direction.RIGHT
+            }
+            else if (labyrinthe.isMur2(tileX + 1F,tileY) &&labyrinthe.isMur2(tileX ,tileY + 1F) ){
+                direction = PacMan.Direction.LEFT
+            }
+
+            // Si fantome touche une inter proba qu'il tourne a gauche ou droite
+            val randomNumber9 = (0..1).random()
+            if(randomNumber9 == 0 &&
+                labyrinthe.isIntersectiondouze(tileX,tileY,labyrinthe.map)&&
+                (tileX % 1 == 0f && tileY %1 == 0f)
+            )
+            {
+                val randomNumber10 = (0..1).random()
+                direction = possibleDirections[randomNumber10]
+            }
+        }
+
+        else if (direction == PacMan.Direction.RIGHT) {
+            if(labyrinthe.isMur2(tileX + 1F,tileY) && !labyrinthe.isMur2(tileX ,tileY + 1F) && !labyrinthe.isMur2(tileX ,ceil(tileY - 1F))){
+                val randomNumber3 = (2..3).random()
+                direction = possibleDirections[randomNumber3]
+            }
+            else if (labyrinthe.isMur2(tileX + 1F,tileY) && labyrinthe.isMur2(tileX ,ceil(tileY - 1F))){
+                direction = PacMan.Direction.DOWN
+            }
+            else if (labyrinthe.isMur2(tileX + 1F,tileY) && labyrinthe.isMur2(tileX ,tileY + 1F) ){
+                direction = PacMan.Direction.UP
+            }
+
+            // Si intersection 1 chance sur 2 de vouloir aller en haut ou pas c'est lui qui choisit
+            val randomNumber7 = (0..1).random()
+            if(randomNumber7 == 0 &&
+                labyrinthe.isIntersectiontreizeouquatorze(tileX,tileY,labyrinthe.map)&&
+                (tileX % 1 == 0f && tileY %1 == 0f)
+            )
+            {
+                direction = PacMan.Direction.UP
+            }
+
+            // Si intersection :  1 chance sur 2 d'aller vers le bas
+            val randomNumber16 = (0..1).random()
+            if(randomNumber16 == 0 &&
+                labyrinthe.isIntersectionseize(tileX,tileY,labyrinthe.map)&&
+                (tileX % 1 == 0f && tileY %1 == 0f)
+            )
+            {
+                direction = PacMan.Direction.DOWN
+            }
+
+        }
+        else if (direction == PacMan.Direction.LEFT) {
+
+            if(labyrinthe.isMur2(ceil(tileX - 1F),tileY) && !labyrinthe.isMur2(tileX ,ceil(tileY - 1F)) && !labyrinthe.isMur2(tileX ,tileY + 1F) ){
+                val randomNumber4 = (2..3).random()
+                direction = possibleDirections[randomNumber4]
+            }
+            else if (labyrinthe.isMur2(ceil(tileX - 1F),tileY) && labyrinthe.isMur2(tileX ,tileY + 1F)){
+                direction = PacMan.Direction.UP
+
+            }
+            else if (labyrinthe.isMur2(ceil(tileX - 1F),tileY) && labyrinthe.isMur2(tileX ,ceil(tileY - 1F))){
+                direction = PacMan.Direction.DOWN
+            }
+
+            // Si intersection 1 chance sur 2 de vouloir aller en haut ou pas c'est lui qui choisit
+            val randomNumber8 = (0..1).random()
+            if(randomNumber8 == 0 &&
+                labyrinthe.isIntersectiontreizeouquatorze(tileX,tileY,labyrinthe.map)&&
+                (tileX % 1 == 0f && tileY %1 == 0f)
+            )
+            {
+                direction = PacMan.Direction.UP
+            }
+
+            val randomNumber18 = (0..1).random()
+            if(randomNumber18 == 0 &&
+                labyrinthe.isIntersectionseize(tileX,tileY,labyrinthe.map)&&
+                (tileX % 1 == 0f && tileY %1 == 0f)
+            )
+            {
+                direction = PacMan.Direction.DOWN
+            }
+
+        }
+
+        if(direction == PacMan.Direction.DOWN ||direction == PacMan.Direction.UP){
+
+            // 1 chance sur 2 d'aller a droite
+            val randomNumber19 = (0..1).random()
+            if(randomNumber19 == 0 &&
+                labyrinthe.isIntersectiondixsept(tileX,tileY,labyrinthe.map)&&
+                (tileX % 1 == 0f && tileY %1 == 0f)
+            )
+            {
+                direction = PacMan.Direction.RIGHT
+            }
+
+            // une chance sur 2 d'aller a gauche
+            val randomNumber20 = (0..1).random()
+            if(randomNumber20 == 0 &&
+                labyrinthe.isIntersectiondixhuit(tileX,tileY,labyrinthe.map)&&
+                (tileX % 1 == 0f && tileY %1 == 0f)
+            )
+            {
+                direction = PacMan.Direction.LEFT
+            }
+
         }
     }
 }

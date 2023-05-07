@@ -4,11 +4,9 @@ import android.content.res.Resources
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.Typeface
-import android.os.SystemClock
 
 
-class DrawTime(private val resources: Resources) : TimeDisplay {
+class Time(private val resources: Resources) : TimeDisplay {
 
     private var startTime = System.currentTimeMillis() + 6000
 

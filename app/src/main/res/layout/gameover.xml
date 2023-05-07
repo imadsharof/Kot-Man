@@ -8,35 +8,51 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:scaleType="fitXY"
-        app:srcCompat="@drawable/pacmancrying"
-        tools:layout_editor_absoluteX="178dp"
-        tools:layout_editor_absoluteY="202dp" />
-
-    <TextView
-        android:id="@+id/game_over_text"
-        android:layout_width="210dp"
-        android:layout_height="128dp"
-        android:fontFamily="cursive"
-        android:text="Game Over"
-        android:textColor="@android:color/holo_orange_light"
-        android:textSize="50sp"
-        app:layout_constraintBottom_toTopOf="@+id/restart_button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.499"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/restart_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Restart"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/game_over_text" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/pacmancrying" />
+
+    <TextView
+        android:id="@+id/monscore"
+        android:layout_width="323dp"
+        android:layout_height="114dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="108dp"
+        android:fontFamily="cursive"
+        android:textColor="@color/white"
+        android:textSize="50sp"
+        app:layout_constraintStart_toStartOf="@+id/imageView"
+        app:layout_constraintTop_toBottomOf="@+id/game_over_text4" />
+
+    <TextView
+        android:id="@+id/game_over_text4"
+        android:layout_width="573dp"
+        android:layout_height="104dp"
+        android:layout_marginStart="116dp"
+        android:layout_marginTop="36dp"
+        android:fontFamily="cursive"
+        android:text="Game Over ...  "
+        android:textColor="@color/white"
+        android:textSize="100sp"
+        app:layout_constraintStart_toStartOf="@+id/imageView"
+        app:layout_constraintTop_toTopOf="@+id/imageView" />
+
+    <ImageButton
+        android:id="@+id/restart_button"
+        android:layout_width="262dp"
+        android:layout_height="183dp"
+        android:layout_marginTop="68dp"
+        android:layout_marginEnd="36dp"
+        android:background="@drawable/tryagain"
+        android:rotationY="-90"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/game_over_text4"
+        app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

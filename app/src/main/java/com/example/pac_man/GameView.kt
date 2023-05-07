@@ -3,6 +3,7 @@ package com.example.pac_man
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.res.Resources
 import android.graphics.Canvas
 import android.graphics.Color
@@ -22,6 +23,8 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
     lateinit var canvas : Canvas
     private lateinit var thread : Thread
     private var drawing = false
+    private val currentActivity: Activity
+
 
     private val screenWidth = Resources.getSystem().displayMetrics.widthPixels.toFloat()
     private val screenHeight = Resources.getSystem().displayMetrics.heightPixels.toFloat()
@@ -32,16 +35,19 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
     private val pacMan: PacMan
     private val labyrinthe: Labyrinthe
     private val life: Life
-    private var pointGris: PointGris
-    private var pointBonus : PointBonus
+    private var pointPetit: PointPetit
+    private var pointGros : PointGros
+    private val score : Score
 
-    private val timeDisplay: TimeDisplay = DrawTime(resources)
+    private val timeDisplay: TimeDisplay = Time(resources)
     private var startTime = System.currentTimeMillis() + 6000
 
-    private val score = Score(context, screenWidth)
+    //val score = Score(context, screenWidth)
+
 
     private var initialX = 0f
     private var initialY = 0f
+
 
     val fantomeVert = FantomeVert(resources, caseWidth, caseHeight)
     val fantomeRouge = FantomeRouge(resources, caseWidth, caseHeight)
@@ -50,22 +56,30 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
 
     val fantomes = arrayListOf(fantomeVert, fantomeRouge, fantomeBleu, fantomeJaune)
 
+    val bonusCoeur = BonusCoeur(resources, caseWidth, caseHeight)
+    val bonusCafe = BonusCafe(resources, caseWidth, caseHeight)
+    val bonus = arrayListOf(bonusCoeur,bonusCafe)
+
     private var gameStarted = false
 
     private var lastDirection: PacMan.Direction = PacMan.Direction.NONE
     init {
-        val activity = context as Activity
+        currentActivity = context as Activity
 
         labyrinthe = Labyrinthe(resources, caseWidth, caseHeight)
         pacMan = PacMan(resources,caseWidth, caseHeight,labyrinthe)
         pacMan.spawnPacMan() // Initialise la position de Pac-Man dans le labyrinthe
-        pointGris = PointGris(resources, caseWidth, caseHeight)
-        pointBonus = PointBonus(resources, caseWidth, caseHeight)// Initialise l'instance de Point.
-        life = Life(resources, screenWidth,activity)
+        pointPetit = PointPetit(resources, caseWidth, caseHeight)
+        pointGros = PointGros(resources, caseWidth, caseHeight)// Initialise l'instance de Point.
+        score = Score(context,screenWidth)
+        life = Life(resources, screenWidth,currentActivity,score)
+        val minDistance = 0.5f
 
-        for ( i in 0 until 4) {
+        for ( i in 0 until fantomes.size) {
             fantomes[i].spawnFantome()
         }
+        for ( bonuss in bonus){
+        bonuss.spawnBonus()}
     }
 
 
@@ -92,16 +106,16 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
                     else -> false
                 }
 
-                val epsilon = 0.001f
                 // Vérifie si Pac-Man est sur une case de la matrice
-                val isOnTileX = abs(pacMan.tileX - round(pacMan.tileX)) == 0F
-                val isOnTileY = abs(pacMan.tileY - round(pacMan.tileY)) == 0F
 
-                //val epsilonX = abs(pacMan.tileX/round(pacMan.tileX) - 1F)
-                //val epsilonY = abs(pacMan.tileY/round(pacMan.tileY) - 1F)
+                //isOnTileX = abs(pacMan.tileX - round(pacMan.tileX)) == 0F
+                //isOnTileY = abs(pacMan.tileY - round(pacMan.tileY)) == 0F
 
-                if ( isOppositeDirection || (isOnTileX && isOnTileY)) {
+
+                if ( isOppositeDirection || (pacMan.isOnTileX && pacMan.isOnTileY)) {
+
                     if (abs(deltaX) > abs(deltaY)) {
+                        println("deltaX: $deltaX, deltaY: $deltaY, isOppositeDirection: $isOppositeDirection, isOnTileX: ${pacMan.isOnTileX}, isOnTileY: ${pacMan.isOnTileY}")
                         // Déplacement horizontal
                         if (deltaX > 0) {
                             // Déplacement vers la droite
@@ -110,7 +124,8 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
                             // Déplacement vers la gauche
                             pacMan.direction = PacMan.Direction.LEFT
                         }
-                    } else {
+                    }else if (abs(deltaY) > abs(deltaX) ) {
+                        println("deltaX: $deltaX, deltaY: $deltaY, isOppositeDirection: $isOppositeDirection, isOnTileX: ${pacMan.isOnTileX}, isOnTileY: ${pacMan.isOnTileY}")
                         // Déplacement vertical
                         if (deltaY > 0) {
                             // Déplacement vers le bas
@@ -136,6 +151,8 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
         // Effectuez ici toute initialisation supplémentaire dont vous avez besoin pour démarrer la partie
     }
 
+
+
     private fun clearCanvas() {
         val backgroundColor = Color.BLACK
         val paint = Paint().apply {
@@ -145,6 +162,19 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
         canvas.drawRect(0f, 0f, screenWidth.toFloat(), screenHeight.toFloat(), paint)
     }
 
+    fun partieGagnee(): Boolean {
+        val chiffresRecherches = setOf(2, 4, 7, 12, 13, 16, 17, 18)
+
+        for (ligne in labyrinthe.map) {
+            for (chiffre in ligne) {
+                if (chiffre in chiffresRecherches) {
+                    return false
+                }
+            }
+        }
+        return true
+    }
+
     fun draw() {
         if (holder.surface.isValid) {
             canvas = holder.lockCanvas()
@@ -152,12 +182,13 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
             clearCanvas() // Ajoutez cette ligne pour effacer le canvas
             labyrinthe.draw(canvas)
             pacMan.draw(canvas)
-            pointGris.draw(canvas, labyrinthe.map)
-            pointBonus.draw(canvas, labyrinthe.map)
+            pointPetit.draw(canvas, labyrinthe.map)
+            pointGros.draw(canvas, labyrinthe.map)
 
             for ( i in 0 until 4) { fantomes[i].draw(canvas)}
             score.draw(canvas)
             life.draw(canvas)
+            for ( bonuss in bonus){ bonuss.draw(canvas)}
 
             val elapsedTime = System.currentTimeMillis() - startTime
             timeDisplay.drawTime(canvas, elapsedTime)
@@ -168,10 +199,18 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
     }
 
    private fun update() {
-        pacMan.update(labyrinthe, score,fantomes,life)
+        pacMan.update(labyrinthe, score,fantomes,life,bonus,this)
         for ( i in 0 until 4) {
             fantomes[i].moveRandomly(labyrinthe)
         }
+       for ( bonuss in bonus){
+           bonuss.update()
+       }
+       if(partieGagnee()){
+           val gameWonIntent = Intent(currentActivity, GameWonActivity::class.java)
+           gameWonIntent.putExtra("score", score.score)
+           currentActivity.startActivity(gameWonIntent)
+       }
     }
 
 

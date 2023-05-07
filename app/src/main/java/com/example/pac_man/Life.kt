@@ -6,14 +6,14 @@ import android.content.Intent
 import android.content.res.Resources
 import android.graphics.*
 
-class Life(private val resources: Resources, private val screenWidth: Float, private val currentActivity: Activity) {
+class Life(private val resources: Resources, private val screenWidth: Float, private val currentActivity: Activity, private val score: Score) {
     private val lifeBitmap: Bitmap
     private val textPaint: Paint
     private val lifeSpacing: Int = 10 // Espace entre les images de vies
-    var lives: Int = 3
-
+    var lives: Int = 1
+    //lateinit var score: Score
     init {
-        val lifeOriginal = BitmapFactory.decodeResource(resources, R.drawable.kotlinlogo)
+        val lifeOriginal = BitmapFactory.decodeResource(resources, R.drawable.kotlindroite)
         lifeBitmap = Bitmap.createScaledBitmap(lifeOriginal, 50, 50, true)
 
         textPaint = Paint()
@@ -30,8 +30,13 @@ class Life(private val resources: Resources, private val screenWidth: Float, pri
         lives -= 1
         if (lives <= 0) {
             val gameOverIntent = Intent(currentActivity, GameOverActivity::class.java)
+            gameOverIntent.putExtra("score", score.score) // Ajoutez le score en tant qu'extra
             currentActivity.startActivity(gameOverIntent)
         }
+    }
+
+    fun increaseLife(){
+        lives +=1
     }
 
     fun draw(canvas: Canvas) {

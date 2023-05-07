@@ -54,62 +54,31 @@ class Labyrinthe(private val resources: Resources, val caseWidth: Float, val cas
         intArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
         intArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
         intArrayOf(0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0),
-        intArrayOf(0, 0, 1, 7, 2, 2, 2, 7, 2, 2, 2, 7, 1, 7, 2, 2, 2, 7, 2, 2, 2, 7, 1, 0, 0),
+        intArrayOf(0, 0, 1, 2, 2, 2, 2,16, 2, 2, 2, 2, 1, 2, 2, 2, 2,16, 2, 2, 2, 2, 1, 0, 0),
         intArrayOf(0, 0, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 0, 0),
         intArrayOf(0, 0, 1, 4, 1, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 1, 4, 1, 0, 0),
-        intArrayOf(0, 0, 1, 7, 2, 2, 2, 7, 2, 7, 2, 7, 2, 7, 2, 7, 2, 7, 2, 2, 2, 7, 1, 0, 0),
+        intArrayOf(0, 0, 1,17, 2, 2, 2,12, 2,16, 2,13, 2,13, 2,16, 2,12, 2, 2, 2,18, 1, 0, 0),
         intArrayOf(0, 0, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 0, 0),
-        intArrayOf(0, 0, 1, 7, 2, 2, 2, 7, 1, 7, 2, 7, 1, 7, 2, 7, 1, 7, 2, 2, 2, 7, 1, 0, 0),
+        intArrayOf(0, 0, 1, 2, 2, 2, 2, 7, 1, 7, 2, 7, 1, 7, 2, 7, 1, 7, 2, 2, 2, 2, 1, 0, 0),
         intArrayOf(0, 0, 1, 1, 1, 1, 1, 2, 1, 3, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 0, 0),
-        intArrayOf(0, 0, 0, 0, 0, 0, 1, 2, 1, 8, 3, 8, 3, 8, 3, 8, 1, 2, 1, 0, 0, 0, 0, 0, 0),
-        intArrayOf(0, 0, 1, 1, 1, 1, 1, 2, 1, 3, 1, 1, 3, 1, 1, 3, 1, 2, 1, 1, 1, 1, 1, 0, 0),
-        intArrayOf(0, 0, 6, 2, 2, 2, 5, 7, 1, 3, 1, 3, 3, 3, 1, 8, 2, 7, 5, 2, 2, 2, 9, 0, 0),
+        intArrayOf(0, 0, 0, 0, 0, 0, 1, 2, 1, 3, 3,14, 3,14, 3, 8, 1, 2, 1, 0, 0, 0, 0, 0, 0),
+        intArrayOf(0, 0, 1, 1, 1, 1, 1, 2, 1, 3, 1, 1,99, 1, 1, 3, 1, 2, 1, 1, 1, 1, 1, 0, 0),
+        intArrayOf(0, 0, 6, 2, 2, 2, 5, 7, 1, 3, 1, 3,15, 3, 1, 8, 2, 2 , 5, 2, 2, 2, 9, 0, 0),
         intArrayOf(0, 0, 1, 1, 1, 1, 1, 2, 1, 3, 1, 3, 3, 3, 1, 3, 1, 2, 1, 1, 1, 1, 1, 0, 0),
         intArrayOf(0, 0, 0, 0, 0, 0, 1, 2, 1, 3, 1, 1, 1, 1, 1, 3, 1, 2, 1, 0, 0, 0, 0, 0, 0),
         intArrayOf(0, 0, 0, 0, 0, 0, 1, 2, 1, 8, 3, 3, 3, 3, 3, 8, 1, 2, 1, 0, 0, 0, 0, 0, 0),
         intArrayOf(0, 0, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 0, 0),
-        intArrayOf(0, 0, 1, 7, 2, 2, 2, 7, 2, 7, 2, 7, 1, 7, 2, 7, 2, 7, 2, 2, 2, 7, 1, 0, 0),
+        intArrayOf(0, 0, 1, 2, 2, 2, 2,12, 2,13, 2, 2, 1, 2, 2,13, 2,12, 2, 2, 2, 2, 1, 0, 0),
         intArrayOf(0, 0, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 0, 0),
-        intArrayOf(0, 0, 1, 4, 7, 1, 1, 7, 2, 7, 2, 7, 2, 7, 2, 7, 2, 7, 1, 1, 7, 4, 1, 0, 0),
+        intArrayOf(0, 0, 1, 4, 2, 1, 1, 2, 2,16, 2,13, 2,13, 2,16, 2, 2, 1, 1, 2, 4, 1, 0, 0),
         intArrayOf(0, 0, 1, 1, 2, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 2, 1, 1, 0, 0),
-        intArrayOf(0, 0, 1, 7, 2, 2, 2, 7, 1, 2, 2, 2, 1, 7, 2, 7, 1, 7, 2, 2, 2, 7, 1, 0, 0),
+        intArrayOf(0, 0, 1, 2,13, 2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2,13 , 2, 1, 0, 0),
         intArrayOf(0, 0, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1, 0, 0),
-        intArrayOf(0, 0, 1, 7, 2, 2, 2, 2, 2, 2, 2, 7, 2, 7, 2, 2, 2, 2, 2, 2, 2, 7, 1, 0, 0),
+        intArrayOf(0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2,13, 2,13, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0, 0),
         intArrayOf(0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0),
         intArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
         intArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
     )
-
-    // 46 colonne et 27 lignes
-    /*var map2 =  arrayOf(
-        intArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-        intArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-        intArrayOf(0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
-        intArrayOf(0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1,1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1),
-        intArrayOf(0, 0, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1,1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1),
-        intArrayOf(0, 0, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1,1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1),
-        intArrayOf(0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1,1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1),
-        intArrayOf(0, 0, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1,1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1),
-        intArrayOf(0, 0, 1, 2, 2, 2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 2, 2, 1,1, 2, 2, 2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 2, 2, 1),
-        intArrayOf(0, 0, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 1, 1, 1,1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 1, 1, 1),
-        intArrayOf(0, 0, 0, 0, 0, 0, 1, 2, 1, 2, 2, 2, 2, 2, 2, 2, 1, 2, 1, 0, 0, 0, 0,0, 0, 0, 0, 1, 2, 1, 2, 2, 2, 2, 2, 2, 2, 1, 2, 1, 0, 0, 0, 0),
-        intArrayOf(0, 0, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 2, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1,1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 2, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1),
-        intArrayOf(0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2,2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2),
-        intArrayOf(0, 0, 1, 1, 1, 1, 1, 2, 1, 2, 1, 2, 2, 2, 1, 2, 1, 2, 1, 1, 1, 1, 1,1, 1, 1, 1, 1, 2, 1, 2, 1, 2, 2, 2, 1, 2, 1, 2, 1, 1, 1, 1, 1),
-        intArrayOf(0, 0, 0, 0, 0, 0, 1, 2, 1, 2, 1, 1, 1, 1, 1, 2, 1, 2, 1, 0, 0, 0, 0,0, 0, 0, 0, 1, 2, 1, 2, 1, 1, 1, 1, 1, 2, 1, 2, 1, 0, 0, 0, 0),
-        intArrayOf(0, 0, 0, 0, 0, 0, 1, 2, 1, 2, 2, 2, 2, 2, 2, 2, 1, 2, 1, 0, 0, 0, 0,0, 0, 0, 0, 1, 2, 1, 2, 2, 2, 2, 2, 2, 2, 1, 2, 1, 0, 0, 0, 0),
-        intArrayOf(0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1,1, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1),
-        intArrayOf(0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1,1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1),
-        intArrayOf(0, 0, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1,1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1),
-        intArrayOf(0, 0, 1, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 1,1, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 1),
-        intArrayOf(0, 0, 1, 1, 2, 2, 1, 2, 1, 2, 1, 1, 1, 1, 1, 2, 1, 2, 1, 2, 2, 1, 1,1, 1, 2, 2, 1, 2, 1, 2, 1, 1, 1, 1, 1, 2, 1, 2, 1, 2, 2, 1, 1),
-        intArrayOf(0, 0, 1, 2, 2, 2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 2, 2, 1,1, 2, 2, 2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 2, 2, 1),
-        intArrayOf(0, 0, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1,1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1),
-        intArrayOf(0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1,1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1),
-        intArrayOf(0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
-        intArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-        intArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-    )*/
 
     val nbLignes = map.size
     val nbColonnes = map[0].size
@@ -125,13 +94,44 @@ class Labyrinthe(private val resources: Resources, val caseWidth: Float, val cas
         if (tileX < 0 || tileX >= nbColonnes || tileY < 0 || tileY >= nbLignes) {
             return true // les bords sont considérés comme des murs
         }
-        return map[tileY.toInt()][tileX.toInt()] == 1
+        return  map[tileY.toInt()][tileX.toInt()] == 1
     }
 
-    fun isIntersection(tileX: Float, tileY: Float, map: Array<IntArray>) : Boolean {
-        return (map[tileY.toInt()][tileX.toInt()] == 7 ||
-                map[tileY.toInt()][tileX.toInt()] == 8 ||
-                map[tileY.toInt()][tileX.toInt()] == 11)
+    fun isZoneInterdite(tileX: Float, tileY: Float): Boolean {
+        if (tileX < 0 || tileX >= nbColonnes || tileY < 0 || tileY >= nbLignes) {
+            return true // les bords sont considérés comme des murs
+        }
+        return  map[tileY.toInt()][tileX.toInt()] == 99
+    }
+    fun isIntersectiondouze(tileX: Float, tileY: Float, map: Array<IntArray>) : Boolean {
+        return (map[tileY.toInt()][tileX.toInt()] == 12||
+                map[tileY.toInt()][tileX.toInt()] == 21)
+    }
+
+    fun isIntersectiontreizeouquatorze(tileX: Float, tileY: Float, map: Array<IntArray>) : Boolean {
+        return (map[tileY.toInt()][tileX.toInt()] == 13 ||
+                map[tileY.toInt()][tileX.toInt()] == 14 ||
+                map[tileY.toInt()][tileX.toInt()] == 12 ||
+                map[tileY.toInt()][tileX.toInt()] == 21 ||
+                map[tileY.toInt()][tileX.toInt()] == 61
+                )
+    }
+
+    fun isIntersectionseize(tileX: Float, tileY: Float, map: Array<IntArray>) : Boolean {
+        return (map[tileY.toInt()][tileX.toInt()] == 16 ||
+                map[tileY.toInt()][tileX.toInt()] == 12 ||
+                map[tileY.toInt()][tileX.toInt()] == 21 ||
+                map[tileY.toInt()][tileX.toInt()] == 61 )
+    }
+
+    fun isIntersectiondixsept(tileX: Float, tileY: Float, map: Array<IntArray>) : Boolean {
+        return (map[tileY.toInt()][tileX.toInt()] == 17 ||
+                map[tileY.toInt()][tileX.toInt()] == 71)
+    }
+
+    fun isIntersectiondixhuit(tileX: Float, tileY: Float, map: Array<IntArray>) : Boolean {
+        return (map[tileY.toInt()][tileX.toInt()] == 18 ||
+                map[tileY.toInt()][tileX.toInt()] == 81)
     }
 
     fun getmapvalue(tileX: Float, tileY: Float, map: Array<IntArray>): Int {
@@ -141,6 +141,8 @@ class Labyrinthe(private val resources: Resources, val caseWidth: Float, val cas
     fun setmapvalue(tileX: Float, tileY: Float, map: Array<IntArray>, value: Int) {
         map[tileY.toInt()][tileX.toInt()] = value
     }
+
+
 
     // Fun draw dessine avec des briques
     /*fun draw(canvas: Canvas) {

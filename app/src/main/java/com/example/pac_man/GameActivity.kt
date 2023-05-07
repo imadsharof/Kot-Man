@@ -18,10 +18,12 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 class GameActivity: AppCompatActivity() {
 
     lateinit var gameView: GameView
+
     private lateinit var compteARebours: ImageView
 
     private lateinit var mediaPlayer: MediaPlayer
     private lateinit var gameOverReceiver: BroadcastReceiver
+
 
     private val startGameRunnable = Runnable {
         gameView.startGame() // Ajoutez cette méthode à votre classe GameView
@@ -36,6 +38,7 @@ class GameActivity: AppCompatActivity() {
         gameView = findViewById(R.id.gameView)
 
 
+
         mediaPlayer = MediaPlayer.create(this, R.raw.gameaudio)
         mediaPlayer.isLooping = true
         mediaPlayer.start()
@@ -46,6 +49,7 @@ class GameActivity: AppCompatActivity() {
         handler.postDelayed({
             compteARebours.visibility = View.GONE
             gameView.startGame()
+            gameView.bonus[0].resetTime()
         }, 6000)
 
 

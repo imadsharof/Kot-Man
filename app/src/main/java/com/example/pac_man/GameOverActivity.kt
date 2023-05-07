@@ -8,14 +8,26 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import android.media.MediaPlayer
+import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.TextView
 
 
 class GameOverActivity : AppCompatActivity() {
 
     private lateinit var mediaPlayer: MediaPlayer
+    private lateinit var restartButton :ImageView
+    lateinit var scoretext: TextView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.gameover)
+
+        // Récupérez le score à partir de l'intent
+        val score = intent.getIntExtra("score", 0)
+
+        scoretext= findViewById(R.id.monscore)
+        scoretext.setText("Your score : $score")
 
         mediaPlayer = MediaPlayer.create(this, R.raw.gameover)
         mediaPlayer.start()
@@ -25,7 +37,22 @@ class GameOverActivity : AppCompatActivity() {
 
 
         // Trouver le bouton "Restart" dans le fichier de mise en page et configurer un OnClickListener
-        val restartButton = findViewById<Button>(R.id.restart_button)
+        restartButton = findViewById<ImageButton>(R.id.restart_button)
+
+        Thread {
+            while (true) {
+                runOnUiThread {
+                    if (restartButton.rotationY != 90F) {
+                        restartButton.rotationY += 1
+                    }
+                    else{
+                        restartButton.rotationY = -90F
+                    }
+                }
+                Thread.sleep(15)
+            }
+        }.start()
+
         restartButton.setOnClickListener {
             // Lancer l'activité principale (ou l'activité de jeu) pour redémarrer le jeu
             val mainActivityIntent = Intent(this, MainActivity::class.java)
