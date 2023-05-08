@@ -10,9 +10,11 @@ abstract class Bonus(
     val caseWidth: Float,
     val caseHeight: Float,
     bonusDrawable: Int,
-    private val bonusFrequency : Int // A chaque bonusfrequency minute le bonus apparaît
+    private val bonusFrequency : Int // A chaque bonusfrequency minute le bonus apparaît,
+
 ) {
-    private val bonusBitmap: Bitmap
+    val bonusBitmap: Bitmap
+
 
     var tileX: Float = 0F
     var tileY: Float = 0F
@@ -36,7 +38,7 @@ abstract class Bonus(
         startTime = System.currentTimeMillis()
     }
 
-    fun draw(canvas: Canvas) {
+    open fun draw(canvas: Canvas,labyrinthe: Labyrinthe) {
         if (isVisible && !isCollected) {
             canvas.drawBitmap(bonusBitmap, tileX * caseWidth, tileY * caseHeight, null)
         }

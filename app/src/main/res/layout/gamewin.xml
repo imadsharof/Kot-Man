@@ -8,8 +8,8 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -26,10 +26,10 @@
         android:textSize="50sp"
         app:layout_constraintBottom_toBottomOf="@+id/imageView"
         app:layout_constraintEnd_toEndOf="@+id/imageView"
-        app:layout_constraintHorizontal_bias="0.608"
+        app:layout_constraintHorizontal_bias="0.499"
         app:layout_constraintStart_toStartOf="@+id/imageView"
         app:layout_constraintTop_toTopOf="@+id/imageView"
-        app:layout_constraintVertical_bias="0.267" />
+        app:layout_constraintVertical_bias="0.289" />
 
     <ImageView
         android:id="@+id/imageView4"
@@ -51,5 +51,18 @@
         app:layout_constraintTop_toTopOf="@+id/imageView"
         app:srcCompat="@drawable/youwin" />
 
+    <ImageButton
+        android:id="@+id/restart_button"
+        android:layout_width="211dp"
+        android:layout_height="97dp"
+        android:layout_marginBottom="24dp"
+        android:background="@drawable/tryagain"
+        android:rotationY="-90"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/imageView4"
+        app:layout_constraintHorizontal_bias="0.593"
+        app:layout_constraintStart_toEndOf="@+id/imageView5"
+        app:layout_constraintTop_toBottomOf="@+id/scorefinal"
+        app:layout_constraintVertical_bias="1.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -34,10 +34,10 @@ class PacMan(
     private var lastTileX = 0F
     private var lastTileY = 0F
     private var timeOnTile = 0L
-    private val maxTimeOnTile = 3000 // 3 secondes en millisecondes
+    private val maxTimeOnTile = 1000 // 3 secondes en millisecondes
 
 
-    var speed = 1 / 16F
+    var speed = 1 / 8F
     var eatFantome = false //si PacMan a mangé le fantome
 
     var lastUpdateTime: Long = 0
@@ -45,6 +45,7 @@ class PacMan(
     var lastCollisionTime: Long = 0
     var lastEatTime: Long = 0
     var lastBonusTime: Long = 0
+    var lastBonusTime2: Long = 0
     var lastPointGrosTime: Long = 0
 
 
@@ -160,7 +161,7 @@ class PacMan(
     fun update(
         labyrinthe: Labyrinthe,
         score: Score,
-        fantomes: List<Fantome>,
+        fantomes: List<MutableList<out Fantome>>,
         life: Life,
         bonus: List<Bonus>,
         gameView: GameView
@@ -185,18 +186,20 @@ class PacMan(
         }
         isOnTileX = abs(tileX - round(tileX)) == 0F
         isOnTileY = abs(tileY - round(tileY)) == 0F
-        println("voici tileX "+ tileX + "Voici tileY" + tileY)
+        //println("voici tileX "+ tileX + "Voici tileY" + tileY)
         lastUpdateTime = System.currentTimeMillis()
         val pointsGained = eatPoint(labyrinthe)
 
         if (eatFantome) {
-            for (fantome in fantomes) {
+            for (fantomeList in fantomes) {
+                for(fantome in fantomeList){
                 fantome.isScary = true
-            }
+            }}
         } else {
-            for (fantome in fantomes) {
+            for (fantomeList in fantomes) {
+                for(fantome in fantomeList){
                 fantome.isScary = false
-                fantome.isVisible = true
+                fantome.isVisible = true}
             }
         }
 
@@ -210,6 +213,7 @@ class PacMan(
         // Vérifie s'il y a collision entre Pac-Man et les fantômes
         checkCollisionsWithGhosts(fantomes, life,score)
         checkIfStuck()
+        println("nbe lignes = " + labyrinthe.nbLignes + "nbe Colonnes = " +labyrinthe.nbColonnes )
     }
 
     private fun checkIfStuck() {
@@ -237,13 +241,35 @@ class PacMan(
                 life.increaseLife()
                 bonus.hideBonus()
                 bonus.isCollected = true
-            } else if (bonus is BonusCafe) {
-                speed = 1 / 8F
-                bonus.hideBonus()
-                bonus.isCollected = true
-                lastBonusTime =
-                    System.currentTimeMillis() // on compte a partir du moment ou pacman mange cafe
             }
+        }
+        if(bonus is BonusSwift){
+            val bonusIterator = bonus.listBonusSwift.iterator() // permet de parcourir éléments listes
+            while (bonusIterator.hasNext()) { // méthode hasNext() renvoie true s'il existe un élément suivant dans la liste, et false s'il n'y en a pas.
+                val bonusswift = bonusIterator.next()
+                if (bonus.isVisible && tileX == bonusswift.first && tileY == bonusswift.second){
+                    speed = 1 / 32F
+                    bonus.hideBonus()
+                    bonus.isCollected = true
+                    bonusIterator.remove() // Supprime le bonus de la liste après la collecte
+                    lastBonusTime2 = System.currentTimeMillis()
+                }
+            }
+        }
+
+        else if(bonus is BonusCafe){
+            val bonusIterator = bonus.listBonusCafe.iterator() // permet de parcourir éléments listes
+            while (bonusIterator.hasNext()) { // méthode hasNext() renvoie true s'il existe un élément suivant dans la liste, et false s'il n'y en a pas.
+                val bonusswift = bonusIterator.next()
+                if (bonus.isVisible && tileX == bonusswift .first && tileY == bonusswift.second){
+                    speed = 1 / 8F
+                    bonus.hideBonus()
+                    bonus.isCollected = true
+                    bonusIterator.remove() // Supprime le bonus de la liste après la collecte
+                    lastBonusTime = System.currentTimeMillis()
+                }
+            }
+
         }
     }
 
@@ -255,6 +281,12 @@ class PacMan(
             speed = 1 / 16F
             lastBonusTime = 0
         }
+        if (lastBonusTime2 > 0 && currentTime - lastBonusTime2 >= 5000) {
+            // Réinitialiser la vitesse de Pac-Man à sa valeur normale
+            speed = 1 / 16F
+            lastBonusTime = 0
+        }
+
     }
 
     fun updateEatFantome() {
@@ -270,8 +302,10 @@ class PacMan(
     // Téléporte Pac-Man s'il se trouve sur une case de téléportation dans la carte du labyrinthe
 // Suit le principe SRP, car elle contient une fonction cohérente qui est liée à la téléportation de Pac-Man
     fun teleport(labyrinthe: Labyrinthe) {
-        if (labyrinthe.getmapvalue(tileX, tileY, labyrinthe.map) == 6) {
-            setPosition(21F, 12F)
+        if (labyrinthe.getmapvalue(tileX, tileY, labyrinthe.map) == 6) { //mode facile
+            if (labyrinthe.nbColonnes<30){ setPosition(22F, 12F)} // mode normal
+            else if(labyrinthe.nbColonnes<50){setPosition(41F,12F)} // mode difficile
+            else{setPosition(64F,12F)}
         } else if (labyrinthe.getmapvalue(tileX, tileY, labyrinthe.map) == 9) {
             setPosition(3F, 12F)
         }
@@ -280,31 +314,32 @@ class PacMan(
 
     // Vérifie s'il y a collision entre Pac-Man et les fantômes
 // Suit le principe SRP, car elle contient une fonction cohérente qui est liée à la vérification des collisions entre Pac-Man et les fantômes
-    fun checkCollisionsWithGhosts(fantomes: List<Fantome>, life: Life, score: Score) {
+    fun checkCollisionsWithGhosts(fantomes: List<MutableList<out Fantome>>, life: Life, score: Score) {
         val currentTime = System.currentTimeMillis()
 
         // Vérifier si Pac-Man touche n'importe quel fantôme dans la liste
-        for (fantome in fantomes) {
-            if (tileX.toInt() == fantome.tileX.toInt() &&
-                tileY.toInt() == fantome.tileY.toInt() &&
-                fantome.isVisible
-            ) {
-                // Si Pac-Man rencontre un fantôme normal
-                if (!fantome.isScary) {
-                    // Vérifier si suffisamment de temps s'est écoulé depuis la dernière collision
-                    // Je laisse un délai de 1 seconde avant de toucher un autre fantôme
-                    if (currentTime - lastCollisionTime >= 1000) {
-                        life.decreaseLife()
-                        lastCollisionTime = currentTime
-                    }
-                }
-                // Si Pac-Man rencontre un fantôme effrayé
-                else {
-                    if (eatFantome) {
+        for (fantomeList in fantomes) {
+            for (fantome in fantomeList) {
+
+                if (tileX.toInt() == fantome.tileX.toInt() && tileY.toInt() == fantome.tileY.toInt() && fantome.isVisible
+                ) {
+                    // Si Pac-Man rencontre un fantôme normal
+                    if (!fantome.isScary) {
+                        // Vérifier si suffisamment de temps s'est écoulé depuis la dernière collision
+                        // Je laisse un délai de 1 seconde avant de toucher un autre fantôme
                         if (currentTime - lastCollisionTime >= 1000) {
-                            score.incrementScore(50)
-                            fantome.isVisible = false
+                            life.decreaseLife()
                             lastCollisionTime = currentTime
+                        }
+                    }
+                    // Si Pac-Man rencontre un fantôme effrayé
+                    else {
+                        if (eatFantome) {
+                            if (currentTime - lastCollisionTime >= 1000) {
+                                score.incrementScore(50)
+                                fantome.isVisible = false
+                                lastCollisionTime = currentTime
+                            }
                         }
                     }
                 }

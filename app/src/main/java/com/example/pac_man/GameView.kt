@@ -8,14 +8,11 @@ import android.content.res.Resources
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.os.Handler
-import android.os.Looper
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import java.lang.Math.abs
-import kotlin.math.round
 
 
 class GameView @JvmOverloads constructor (context: Context, attributes: AttributeSet? = null, defStyleAttr: Int = 0): SurfaceView(context, attributes,defStyleAttr), Runnable, SurfaceHolder.Callback {
@@ -29,8 +26,6 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
     private val screenWidth = Resources.getSystem().displayMetrics.widthPixels.toFloat()
     private val screenHeight = Resources.getSystem().displayMetrics.heightPixels.toFloat()
 
-    private val caseWidth : Float = screenWidth / 25
-    private val caseHeight : Float = screenHeight / 27
 
     private val pacMan: PacMan
     private val labyrinthe: Labyrinthe
@@ -38,6 +33,18 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
     private var pointPetit: PointPetit
     private var pointGros : PointGros
     private val score : Score
+
+    private val fantomeVert : FantomeVert
+    private val fantomeRouge : FantomeRouge
+    private val fantomeJaune : FantomeJaune
+    private val fantomeBleu : FantomeBleu
+
+    private var listFantomeVert: MutableList<FantomeVert> = mutableListOf()
+    private var listFantomeRouge: MutableList<FantomeRouge> = mutableListOf()
+    private var listFantomeJaune: MutableList<FantomeJaune> = mutableListOf()
+    private var listFantomeBleu: MutableList<FantomeBleu> = mutableListOf()
+
+
 
     private val timeDisplay: TimeDisplay = Time(resources)
     private var startTime = System.currentTimeMillis() + 6000
@@ -48,17 +55,16 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
     private var initialX = 0f
     private var initialY = 0f
 
+    private val caseWidth : Float = screenWidth / 67 // 25 , 44 ou 67
+    private val caseHeight : Float = screenHeight / 27
 
-    val fantomeVert = FantomeVert(resources, caseWidth, caseHeight)
-    val fantomeRouge = FantomeRouge(resources, caseWidth, caseHeight)
-    val fantomeBleu = FantomeBleu(resources, caseWidth, caseHeight)
-    val fantomeJaune = FantomeJaune(resources, caseWidth, caseHeight)
 
-    val fantomes = arrayListOf(fantomeVert, fantomeRouge, fantomeBleu, fantomeJaune)
 
     val bonusCoeur = BonusCoeur(resources, caseWidth, caseHeight)
     val bonusCafe = BonusCafe(resources, caseWidth, caseHeight)
-    val bonus = arrayListOf(bonusCoeur,bonusCafe)
+    val bonusSwift = BonusSwift(resources, caseWidth, caseHeight)
+
+    val bonus = arrayListOf(bonusCoeur,bonusCafe,bonusSwift)
 
     private var gameStarted = false
 
@@ -73,14 +79,51 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
         pointGros = PointGros(resources, caseWidth, caseHeight)// Initialise l'instance de Point.
         score = Score(context,screenWidth)
         life = Life(resources, screenWidth,currentActivity,score)
-        val minDistance = 0.5f
 
-        for ( i in 0 until fantomes.size) {
-            fantomes[i].spawnFantome()
+        fantomeVert = FantomeVert(resources, caseWidth, caseHeight)
+        fantomeRouge = FantomeRouge(resources, caseWidth, caseHeight)
+        fantomeBleu = FantomeBleu(resources, caseWidth, caseHeight)
+        fantomeJaune = FantomeJaune(resources, caseWidth, caseHeight)
+
+        listFantomeVert = mutableListOf<FantomeVert>()
+        listFantomeRouge = mutableListOf<FantomeRouge>()
+        listFantomeBleu = mutableListOf<FantomeBleu>()
+        listFantomeJaune = mutableListOf<FantomeJaune>()
+
+        for (y in labyrinthe.map.indices) {
+            for (x in labyrinthe.map[y].indices) {
+                if (labyrinthe.map[y][x] == 40) {
+                    val fantomeBleu = FantomeBleu(resources, caseWidth, caseHeight)
+                    fantomeBleu.setPosition(x.toFloat(), y.toFloat())
+                    listFantomeBleu.add(fantomeBleu)
+                }
+                else if (labyrinthe.map[y][x] == 15) {
+                    val fantomeJaune = FantomeJaune(resources, caseWidth, caseHeight)
+                    fantomeJaune.setPosition(x.toFloat(), y.toFloat())
+                    listFantomeJaune.add(fantomeJaune)
+                }
+
+                else if (labyrinthe.map[y][x] == 41) {
+                    val fantomeRouge = FantomeRouge(resources, caseWidth, caseHeight)
+                    fantomeRouge.setPosition(x.toFloat(), y.toFloat())
+                    listFantomeRouge.add(fantomeRouge)
+                }
+
+                else if (labyrinthe.map[y][x] == 42) {
+                    val fantomeVert = FantomeVert(resources, caseWidth, caseHeight)
+                    fantomeVert.setPosition(x.toFloat(), y.toFloat())
+                    listFantomeVert.add(fantomeVert)
+                }
+
+            }
         }
-        for ( bonuss in bonus){
-        bonuss.spawnBonus()}
+
+        val lesfantomes = arrayListOf(fantomeVert, fantomeRouge, fantomeBleu, fantomeJaune)
+        for (fantomee in lesfantomes){fantomee.spawnFantome()}
+        for ( bonuss in bonus){ bonuss.spawnBonus()}
     }
+
+    val allFantomes = listOf(listFantomeVert, listFantomeRouge, listFantomeBleu, listFantomeJaune)
 
 
 
@@ -185,10 +228,14 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
             pointPetit.draw(canvas, labyrinthe.map)
             pointGros.draw(canvas, labyrinthe.map)
 
-            for ( i in 0 until 4) { fantomes[i].draw(canvas)}
+            for (fantomeList in allFantomes) {
+                for (fantome in fantomeList) {
+                    fantome.draw(canvas, labyrinthe)
+                }
+            }
             score.draw(canvas)
             life.draw(canvas)
-            for ( bonuss in bonus){ bonuss.draw(canvas)}
+            for ( bonuss in bonus){ bonuss.draw(canvas,labyrinthe)}
 
             val elapsedTime = System.currentTimeMillis() - startTime
             timeDisplay.drawTime(canvas, elapsedTime)
@@ -199,10 +246,12 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
     }
 
    private fun update() {
-        pacMan.update(labyrinthe, score,fantomes,life,bonus,this)
-        for ( i in 0 until 4) {
-            fantomes[i].moveRandomly(labyrinthe)
-        }
+       pacMan.update(labyrinthe, score,allFantomes,life,bonus,this)
+       for (fantomeList in allFantomes) {
+           for (fantome in fantomeList) {
+               fantome.moveRandomly(labyrinthe)
+           }}
+
        for ( bonuss in bonus){
            bonuss.update()
        }

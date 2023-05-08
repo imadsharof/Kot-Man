@@ -19,9 +19,10 @@ abstract class Fantome(
     fantomeDrawable: Int,
     scaryFantomeDrawable: Int
 ) {
-    private val fantomeBitmap: Bitmap
-    private val scaryFantomeBitmap: Bitmap
+    val fantomeBitmap: Bitmap
+    val scaryFantomeBitmap: Bitmap
 
+    val listFantomes = mutableListOf<Pair<Float, Float>>()
 
     var tileX: Float = 0F
     var tileY: Float = 0F
@@ -67,27 +68,10 @@ abstract class Fantome(
         tileY = newtileY
     }
 
-    fun draw(canvas: Canvas) {
+    open fun draw(canvas: Canvas,labyrinthe: Labyrinthe) {
         if(isVisible){
         if(!isScary){ canvas.drawBitmap(fantomeBitmap, tileX * caseWidth, tileY * caseHeight, null)}
         else{ canvas.drawBitmap(scaryFantomeBitmap, tileX * caseWidth, tileY * caseHeight, null) }}
-    }
-
-    fun reverseDirection() {
-        direction = when(direction) {
-            PacMan.Direction.UP -> PacMan.Direction.DOWN
-            PacMan.Direction.DOWN -> PacMan.Direction.UP
-            PacMan.Direction.LEFT -> PacMan.Direction.RIGHT
-            PacMan.Direction.RIGHT -> PacMan.Direction.LEFT
-            else -> direction
-        }
-    }
-
-    fun updateGhostVisibility() {
-        // Si Pac-Man ne peut plus manger les fantômes effrayés
-        if (!isScary) {
-            isVisible = true
-        }
     }
 
     fun moveRandomly(labyrinthe: Labyrinthe) {
@@ -112,7 +96,7 @@ abstract class Fantome(
             updateDirectionIfBothMurs(murB, murD, PacMan.Direction.UP)
 
             // Si fantome touche le 15
-            if (!isExit && tileX == 12F && tileY == 12F) {
+            if (!isExit && labyrinthe.getmapvalue(tileX, tileY, labyrinthe.map) == 15) {
                 direction = PacMan.Direction.UP
                 isExit = true
             }

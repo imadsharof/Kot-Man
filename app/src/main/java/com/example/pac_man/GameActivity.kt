@@ -23,6 +23,7 @@ class GameActivity: AppCompatActivity() {
 
     private lateinit var mediaPlayer: MediaPlayer
     private lateinit var gameOverReceiver: BroadcastReceiver
+    private lateinit var gameWonReceiver: BroadcastReceiver
 
 
     private val startGameRunnable = Runnable {
@@ -59,9 +60,19 @@ class GameActivity: AppCompatActivity() {
             }
         }
 
+        gameWonReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                stopMusic()
+            }
+        }
+
         LocalBroadcastManager.getInstance(this)
             .registerReceiver(gameOverReceiver, IntentFilter("ACTION_GAME_OVER"))
-    }
+
+
+        LocalBroadcastManager.getInstance(this)
+        .registerReceiver(gameWonReceiver, IntentFilter("ACTION_GAME_WIN"))
+}
 
     fun stopMusic() {
         mediaPlayer.stop()
@@ -72,6 +83,7 @@ class GameActivity: AppCompatActivity() {
 
         mediaPlayer.release()
         LocalBroadcastManager.getInstance(this).unregisterReceiver(gameOverReceiver)
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(gameWonReceiver)
 
         handler.removeCallbacks(startGameRunnable)
     }

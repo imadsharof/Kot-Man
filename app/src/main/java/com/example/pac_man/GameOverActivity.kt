@@ -16,7 +16,7 @@ import android.widget.TextView
 class GameOverActivity : AppCompatActivity() {
 
     private lateinit var mediaPlayer: MediaPlayer
-    private lateinit var restartButton :ImageView
+    private lateinit var restartButton :ImageButton
     lateinit var scoretext: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,6 +54,9 @@ class GameOverActivity : AppCompatActivity() {
         }.start()
 
         restartButton.setOnClickListener {
+            // Arrêter la musique
+            mediaPlayer.stop()
+            mediaPlayer.reset()
             // Lancer l'activité principale (ou l'activité de jeu) pour redémarrer le jeu
             val mainActivityIntent = Intent(this, MainActivity::class.java)
             startActivity(mainActivityIntent)
