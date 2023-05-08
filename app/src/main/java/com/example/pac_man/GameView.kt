@@ -24,7 +24,6 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
     lateinit var canvas : Canvas
     private lateinit var thread : Thread
     private var drawing = false
-    //private val currentActivity: Activity
 
 
     private val screenWidth = Resources.getSystem().displayMetrics.widthPixels.toFloat()
@@ -58,8 +57,6 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
     private val timeDisplay: TimeDisplay = Time(resources)
     private var startTime = System.currentTimeMillis() + 6000
 
-    //val score = Score(context, screenWidth)
-
 
     private var initialX = 0f
     private var initialY = 0f
@@ -72,8 +69,6 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
     val currentActivity = context as Activity
 
     init {
-        //holder.addCallback(this)
-        //thread = Thread(this)
         initializeObjects()
     }
     fun initializeObjects() {
@@ -83,7 +78,7 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
         pacMan = PacMan(resources,caseWidth, caseHeight,labyrinthe)
         pacMan.spawnPacMan()
         pointPetit = PointPetit(resources, caseWidth, caseHeight)
-        pointGros = PointGros(resources, caseWidth, caseHeight)// Initialise l'instance
+        pointGros = PointGros(resources, caseWidth, caseHeight)
         score = Score(context,screenWidth)
         life = Life(resources, screenWidth,currentActivity,score)
 
@@ -239,7 +234,6 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
 
     fun startGame() {
         gameStarted = true
-        // Effectuez ici toute initialisation supplémentaire dont vous avez besoin pour démarrer la partie
     }
 
 

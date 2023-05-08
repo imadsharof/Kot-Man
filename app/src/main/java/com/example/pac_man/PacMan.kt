@@ -13,7 +13,7 @@ class PacMan(
     private val caseWidth: Float, // La largeur d'une case dans le labyrinthe
     private val caseHeight: Float, // La hauteur d'une case dans le labyrinthe
     private val labyrinthe: Labyrinthe
-) {
+) : Movable {
     private var pacManBitmap: Bitmap // L'image de Pac-Man
 
     private val pacManRightBitmap: Bitmap
@@ -34,7 +34,6 @@ class PacMan(
     private var lastTileX = -1F
     private var lastTileY = -1F
 
-    private var isMoving = false
     private var timeOnTile = 0L
     private val maxTimeOnTile = 1000 // 3 secondes en millisecondes
 
@@ -45,14 +44,12 @@ class PacMan(
     var lastUpdateTime: Long = 0
 
     var lastCollisionTime: Long = 0
-    var lastEatTime: Long = 0
     var lastBonusTime: Long = 0
     var lastBonusTime2: Long = 0
     var lastPointGrosTime: Long = 0
 
 
     var direction: Direction = Direction.NONE // La direction actuelle de Pac-Man
-    // Initialise la classe PacMan
 
     init {
         val pacManRightOriginal = BitmapFactory.decodeResource(resources, R.drawable.kotlindroite)
@@ -60,27 +57,10 @@ class PacMan(
         val pacManUpOriginal = BitmapFactory.decodeResource(resources, R.drawable.kotlinhaut)
         val pacManDownOriginal = BitmapFactory.decodeResource(resources, R.drawable.kotlinbas)
 
-        pacManRightBitmap = Bitmap.createScaledBitmap(
-            pacManRightOriginal,
-            caseWidth.toInt(),
-            caseHeight.toInt(),
-            true
-        )
-        pacManLeftBitmap = Bitmap.createScaledBitmap(
-            pacManLeftOriginal,
-            caseWidth.toInt(),
-            caseHeight.toInt(),
-            true
-        )
-        pacManUpBitmap =
-            Bitmap.createScaledBitmap(pacManUpOriginal, caseWidth.toInt(), caseHeight.toInt(), true)
-        pacManDownBitmap = Bitmap.createScaledBitmap(
-            pacManDownOriginal,
-            caseWidth.toInt(),
-            caseHeight.toInt(),
-            true
-        )
-
+        pacManRightBitmap = Bitmap.createScaledBitmap(pacManRightOriginal, caseWidth.toInt(), caseHeight.toInt(), true)
+        pacManLeftBitmap = Bitmap.createScaledBitmap(pacManLeftOriginal, caseWidth.toInt(), caseHeight.toInt(), true)
+        pacManUpBitmap = Bitmap.createScaledBitmap(pacManUpOriginal, caseWidth.toInt(), caseHeight.toInt(), true)
+        pacManDownBitmap = Bitmap.createScaledBitmap(pacManDownOriginal, caseWidth.toInt(), caseHeight.toInt(), true)
         pacManBitmap = pacManRightBitmap
     }
 
@@ -93,11 +73,9 @@ class PacMan(
         RIGHT
     }
 
-    fun setPosition(newtileX: Float, newtileY: Float) {
-        //println("Before setPosition: tileX = $tileX, tileY = $tileY")
+   fun setPosition(newtileX: Float, newtileY: Float) {
         tileX = newtileX
         tileY = newtileY
-        //println("After setPosition: tileX = $tileX, tileY = $tileY")
     }
 
     // Initialise la position de Pac-Man dans le labyrinthe
@@ -106,13 +84,7 @@ class PacMan(
         tileY = 17F
     }
 
-    /*fun isWall(labyrinthe: Labyrinthe, x: Float, y: Float): Boolean {
-        val i = y / caseHeight
-        val j = x / caseWidth
-        return labyrinthe.map[i][j] == 1
-    }*/
-
-    fun moveLeft() {
+    override fun moveLeft() {
         pacManBitmap = pacManLeftBitmap
         nextTileX = tileX - speed
         if (!labyrinthe.isMur2(nextTileX, tileY) && !labyrinthe.isMur2(ceil(tileX - 1F), tileY)) {
@@ -120,7 +92,7 @@ class PacMan(
         }
     }
 
-    fun moveRight() {
+    override  fun moveRight() {
         pacManBitmap = pacManRightBitmap
         if (!labyrinthe.isMur2(tileX + 1F, tileY)) {
             nextTileX = tileX + speed
@@ -130,7 +102,7 @@ class PacMan(
         }
     }
 
-    fun moveUp() {
+    override  fun moveUp() {
         pacManBitmap = pacManUpBitmap
         nextTileY = tileY - speed
 
@@ -139,7 +111,7 @@ class PacMan(
         }
     }
 
-    fun moveDown() {
+    override  fun moveDown() {
         pacManBitmap = pacManDownBitmap
         nextTileY = tileY + speed
         if (!labyrinthe.isMur2(tileX, nextTileY) && !labyrinthe.isMur2(
@@ -160,14 +132,7 @@ class PacMan(
     // Suit le principe SRP, car elle contient des fonctions liées à la mise à jour de la position et de l'état de Pac-Man, qui sont des actions cohérentes
     // Elle suit également le principe OCP, car elle peut facilement être étendue pour des futures fonctionnalités liées à Pac-Man
 
-    fun update(
-        labyrinthe: Labyrinthe,
-        score: Score,
-        fantomes: List<MutableList<out Fantome>>,
-        life: Life,
-        bonus: List<Bonus>,
-        gameView: GameView
-    ) {
+    fun update(labyrinthe: Labyrinthe, score: Score, fantomes: List<MutableList<out Fantome>>, life: Life, bonus: List<Bonus>, gameView: GameView) {
 
         when (direction) {
             Direction.NONE -> {
@@ -188,11 +153,11 @@ class PacMan(
         }
         isOnTileX = abs(tileX - round(tileX)) == 0F
         isOnTileY = abs(tileY - round(tileY)) == 0F
-        //println("voici tileX "+ tileX + "Voici tileY" + tileY)
+
         lastUpdateTime = System.currentTimeMillis()
         val pointsGained = eatPoint(labyrinthe)
         score.incrementScore(pointsGained)
-        println(pointsGained)
+
         if (eatFantome) {
             for (fantomeList in fantomes) {
                 for(fantome in fantomeList){
@@ -289,12 +254,14 @@ class PacMan(
         // Bonus actif pendant 5sec
         if (lastBonusTime > 0 && currentTime - lastBonusTime >= 5000) {
             // Réinitialiser la vitesse de Pac-Man à sa valeur normale
+            setPosition(round(tileX),round(tileY))
             speed = 1 / 16F
             checkIfStuck()
             lastBonusTime = 0
         }
         if (lastBonusTime2 > 0 && currentTime - lastBonusTime2 >= 5000) {
             // Réinitialiser la vitesse de Pac-Man à sa valeur normale
+            setPosition(round(tileX),round(tileY))
             speed = 1 / 16F
             checkIfStuck()
             lastBonusTime2 = 0
@@ -328,6 +295,7 @@ class PacMan(
     // Vérifie s'il y a collision entre Pac-Man et les fantômes
 // Suit le principe SRP, car elle contient une fonction cohérente qui est liée à la vérification des collisions entre Pac-Man et les fantômes
     fun checkCollisionsWithGhosts(fantomes: List<MutableList<out Fantome>>, life: Life, score: Score) {
+
         val currentTime = System.currentTimeMillis()
 
         // Vérifier si Pac-Man touche n'importe quel fantôme dans la liste

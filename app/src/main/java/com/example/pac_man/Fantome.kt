@@ -22,7 +22,6 @@ abstract class Fantome(
     val fantomeBitmap: Bitmap
     val scaryFantomeBitmap: Bitmap
 
-    val listFantomes = mutableListOf<Pair<Float, Float>>()
 
     var tileX: Float = 0F
     var tileY: Float = 0F
@@ -32,12 +31,9 @@ abstract class Fantome(
 
     var isExit = false
     var isVisible = true
-    var isEaten = false
-
-    val speed = 1/16F // La vitesse de déplacement des fantômes
     var isScary = false
 
-
+    val speed = 1/16F // La vitesse de déplacement des fantômes
 
     var direction: PacMan.Direction = PacMan.Direction.UP
 
