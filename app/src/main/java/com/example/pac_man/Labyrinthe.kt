@@ -259,9 +259,13 @@ class Labyrinthe(private val resources: Resources, val caseWidth: Float, val cas
 
         }
         else{
-            if(mode == "difficile"){wallOriginal = BitmapFactory.decodeResource(resources, R.drawable.binaire)
+            if(mode == "difficile"){wallOriginal = BitmapFactory.decodeResource(resources, R.drawable.pacman_droite_ouvre_bouche)
                 wallBitmap = Bitmap.createScaledBitmap(wallOriginal, caseWidth.toInt(),caseHeight.toInt(), true)
             }
+            if(mode == "facile"){wallOriginal = BitmapFactory.decodeResource(resources, R.drawable.binaire)
+                wallBitmap = Bitmap.createScaledBitmap(wallOriginal, caseWidth.toInt(),caseHeight.toInt(), true)
+            }
+
             for (i in 0 until nbLignes) {
                 for (j in 0 until nbColonnes) {
                     val left = j * caseWidth

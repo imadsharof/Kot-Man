@@ -243,6 +243,7 @@ class PacMan(
             while (bonusIterator.hasNext()) { // méthode hasNext() renvoie true s'il existe un élément suivant dans la liste, et false s'il n'y en a pas.
                 val bonusswift = bonusIterator.next()
                 if (bonus.isVisible && tileX == bonusswift.first && tileY == bonusswift.second){
+                    setPosition(bonusswift.first,bonusswift.second)
                     speed = 1 / 32F
                     bonus.hideBonus()
                     bonus.isCollected = true
