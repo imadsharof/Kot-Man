@@ -10,7 +10,7 @@ class Life(private val resources: Resources, private val screenWidth: Float, pri
     private val lifeBitmap: Bitmap
     private val textPaint: Paint
     private val lifeSpacing: Int = 10 // Espace entre les images de vies
-    var lives: Int = 20
+    var lives: Int = 10
     //lateinit var score: Score
     init {
         val lifeOriginal = BitmapFactory.decodeResource(resources, R.drawable.kotlindroite)

@@ -31,13 +31,15 @@ class PacMan(
     var nextTileX = 0F
     var nextTileY = 0F
 
-    private var lastTileX = 0F
-    private var lastTileY = 0F
+    private var lastTileX = -1F
+    private var lastTileY = -1F
+
+    private var isMoving = false
     private var timeOnTile = 0L
     private val maxTimeOnTile = 1000 // 3 secondes en millisecondes
 
 
-    var speed = 1 / 8F
+    var speed = 1 / 16F
     var eatFantome = false //si PacMan a mangé le fantome
 
     var lastUpdateTime: Long = 0
@@ -92,10 +94,10 @@ class PacMan(
     }
 
     fun setPosition(newtileX: Float, newtileY: Float) {
-        println("Before setPosition: tileX = $tileX, tileY = $tileY")
+        //println("Before setPosition: tileX = $tileX, tileY = $tileY")
         tileX = newtileX
         tileY = newtileY
-        println("After setPosition: tileX = $tileX, tileY = $tileY")
+        //println("After setPosition: tileX = $tileX, tileY = $tileY")
     }
 
     // Initialise la position de Pac-Man dans le labyrinthe
@@ -189,7 +191,8 @@ class PacMan(
         //println("voici tileX "+ tileX + "Voici tileY" + tileY)
         lastUpdateTime = System.currentTimeMillis()
         val pointsGained = eatPoint(labyrinthe)
-
+        score.incrementScore(pointsGained)
+        println(pointsGained)
         if (eatFantome) {
             for (fantomeList in fantomes) {
                 for(fantome in fantomeList){
@@ -203,7 +206,6 @@ class PacMan(
             }
         }
 
-        score.incrementScore(pointsGained)
         teleport(labyrinthe)
         for (bonuss in bonus) {
             collectBonus(bonuss, life, gameView)
@@ -213,7 +215,7 @@ class PacMan(
         // Vérifie s'il y a collision entre Pac-Man et les fantômes
         checkCollisionsWithGhosts(fantomes, life,score)
         checkIfStuck()
-        println("nbe lignes = " + labyrinthe.nbLignes + "nbe Colonnes = " +labyrinthe.nbColonnes )
+        //println("nbe lignes = " + labyrinthe.nbLignes + "nbe Colonnes = " +labyrinthe.nbColonnes )
     }
 
     private fun checkIfStuck() {
@@ -236,13 +238,6 @@ class PacMan(
 
     fun collectBonus(bonus: Bonus, life: Life, gameView: GameView) {
 
-        if (bonus.isVisible && tileX == bonus.tileX && tileY == bonus.tileY) {
-            if (bonus is BonusCoeur) {
-                life.increaseLife()
-                bonus.hideBonus()
-                bonus.isCollected = true
-            }
-        }
         if(bonus is BonusSwift){
             val bonusIterator = bonus.listBonusSwift.iterator() // permet de parcourir éléments listes
             while (bonusIterator.hasNext()) { // méthode hasNext() renvoie true s'il existe un élément suivant dans la liste, et false s'il n'y en a pas.
@@ -258,14 +253,29 @@ class PacMan(
         }
 
         else if(bonus is BonusCafe){
-            val bonusIterator = bonus.listBonusCafe.iterator() // permet de parcourir éléments listes
-            while (bonusIterator.hasNext()) { // méthode hasNext() renvoie true s'il existe un élément suivant dans la liste, et false s'il n'y en a pas.
-                val bonusswift = bonusIterator.next()
-                if (bonus.isVisible && tileX == bonusswift .first && tileY == bonusswift.second){
+            val bonusIterator2 = bonus.listBonusCafe.iterator() // permet de parcourir éléments listes
+            while (bonusIterator2.hasNext()) { // méthode hasNext() renvoie true s'il existe un élément suivant dans la liste, et false s'il n'y en a pas.
+                val bonusscafe = bonusIterator2.next()
+                if (bonus.isVisible && tileX == bonusscafe.first && tileY == bonusscafe.second){
                     speed = 1 / 8F
                     bonus.hideBonus()
                     bonus.isCollected = true
-                    bonusIterator.remove() // Supprime le bonus de la liste après la collecte
+                    bonusIterator2.remove() // Supprime le bonus de la liste après la collecte
+                    lastBonusTime = System.currentTimeMillis()
+                }
+            }
+
+        }
+
+        else if(bonus is BonusCoeur){
+            val bonusIterator3 = bonus.listBonusCoeur.iterator() // permet de parcourir éléments listes
+            while (bonusIterator3.hasNext()) { // méthode hasNext() renvoie true s'il existe un élément suivant dans la liste, et false s'il n'y en a pas.
+                val bonusscoeur = bonusIterator3.next()
+                if (bonus.isVisible && tileX == bonusscoeur.first && tileY == bonusscoeur.second){
+                    life.increaseLife()
+                    bonus.hideBonus()
+                    bonus.isCollected = true
+                    bonusIterator3.remove() // Supprime le bonus de la liste après la collecte
                     lastBonusTime = System.currentTimeMillis()
                 }
             }
@@ -279,12 +289,14 @@ class PacMan(
         if (lastBonusTime > 0 && currentTime - lastBonusTime >= 5000) {
             // Réinitialiser la vitesse de Pac-Man à sa valeur normale
             speed = 1 / 16F
+            checkIfStuck()
             lastBonusTime = 0
         }
         if (lastBonusTime2 > 0 && currentTime - lastBonusTime2 >= 5000) {
             // Réinitialiser la vitesse de Pac-Man à sa valeur normale
             speed = 1 / 16F
-            lastBonusTime = 0
+            checkIfStuck()
+            lastBonusTime2 = 0
         }
 
     }
@@ -303,9 +315,9 @@ class PacMan(
 // Suit le principe SRP, car elle contient une fonction cohérente qui est liée à la téléportation de Pac-Man
     fun teleport(labyrinthe: Labyrinthe) {
         if (labyrinthe.getmapvalue(tileX, tileY, labyrinthe.map) == 6) { //mode facile
-            if (labyrinthe.nbColonnes<30){ setPosition(22F, 12F)} // mode normal
-            else if(labyrinthe.nbColonnes<50){setPosition(41F,12F)} // mode difficile
-            else{setPosition(64F,12F)}
+            if (labyrinthe.nbColonnes<30){ setPosition(21F, 12F)} // mode normal
+            else if(labyrinthe.nbColonnes<50){setPosition(40F,12F)} // mode difficile
+            else{setPosition(63F,12F)}
         } else if (labyrinthe.getmapvalue(tileX, tileY, labyrinthe.map) == 9) {
             setPosition(3F, 12F)
         }
@@ -358,46 +370,44 @@ class PacMan(
     // Mange les points présents sur la case actuelle de Pac-Man s'il y en a
     // Suit le principe SRP, car elle contient une fonction cohérente qui est liée à la consommation des points par Pac-Man
     fun eatPoint(labyrinthe: Labyrinthe): Int {
-        val currentTime = System.currentTimeMillis()
 
-        if (labyrinthe.getmapvalue(tileX, tileY, labyrinthe.map) == 2) {
-
+        if (labyrinthe.getmapvalue(round(tileX), round(tileY), labyrinthe.map) == 2 && (tileX %1 ==0f && tileY%1 == 0f)) {
             labyrinthe.setmapvalue(tileX, tileY, labyrinthe.map, 0)
             return 10
         }
-        else if( labyrinthe.getmapvalue(tileX, tileY, labyrinthe.map) == 4){
+        else if( labyrinthe.getmapvalue(round(tileX), round(tileY), labyrinthe.map) == 4 && (tileX %1 ==0f && tileY%1 == 0f)){
 
             lastPointGrosTime = System.currentTimeMillis()
             eatFantome = true
             labyrinthe.setmapvalue(tileX, tileY, labyrinthe.map, 0)
             return 10
         }
-        else if(labyrinthe.getmapvalue(tileX, tileY, labyrinthe.map) == 7){
+        else if(labyrinthe.getmapvalue(round(tileX), round(tileY), labyrinthe.map) == 7 && (tileX %1 ==0f && tileY%1 == 0f)){
             labyrinthe.setmapvalue(tileX, tileY, labyrinthe.map, 11)
             return 10
         }
 
-        else if(labyrinthe.getmapvalue(tileX, tileY, labyrinthe.map) == 12){
+        else if(labyrinthe.getmapvalue(round(tileX), round(tileY), labyrinthe.map) == 12 && (tileX %1 ==0f && tileY%1 == 0f)){
             labyrinthe.setmapvalue(tileX, tileY, labyrinthe.map, 21)
             return 10
         }
 
-        else if(labyrinthe.getmapvalue(tileX, tileY, labyrinthe.map) == 13){
+        else if(labyrinthe.getmapvalue(round(tileX), round(tileY), labyrinthe.map) == 13 && (tileX %1 ==0f && tileY%1 == 0f)){
             labyrinthe.setmapvalue(tileX, tileY, labyrinthe.map, 31)
             return 10
         }
 
-        else if(labyrinthe.getmapvalue(tileX, tileY, labyrinthe.map) == 16){
+        else if(labyrinthe.getmapvalue(round(tileX), round(tileY), labyrinthe.map) == 16 && (tileX %1 ==0f && tileY%1 == 0f)){
             labyrinthe.setmapvalue(tileX, tileY, labyrinthe.map, 61)
             return 10
         }
 
-        else if(labyrinthe.getmapvalue(tileX, tileY, labyrinthe.map) == 17){
+        else if(labyrinthe.getmapvalue(tileX, tileY, labyrinthe.map) == 17 && (tileX %1 ==0f && tileY%1 == 0f)){
             labyrinthe.setmapvalue(tileX, tileY, labyrinthe.map, 71)
             return 10
         }
 
-        else if(labyrinthe.getmapvalue(tileX, tileY, labyrinthe.map) == 18){
+        else if(labyrinthe.getmapvalue(tileX, tileY, labyrinthe.map) == 18 && (tileX %1 ==0f && tileY%1 == 0f)) {
             labyrinthe.setmapvalue(tileX, tileY, labyrinthe.map, 81)
             return 10
         }

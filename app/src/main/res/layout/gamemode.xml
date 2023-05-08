@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".GameModeActivity">
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        app:srcCompat="@drawable/menu"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="-219dp" />
+
+    <Button
+        android:id="@+id/arcadeButton"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:backgroundTint="#FF6122"
+        android:text="Arcade"
+        android:fontFamily="@font/arcade_font"
+        app:layout_constraintBottom_toTopOf="@+id/normalButton"
+        app:layout_constraintEnd_toEndOf="@+id/normalButton"
+        app:layout_constraintHeight_percent="0.15"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/normalButton"
+        app:layout_constraintTop_toTopOf="@+id/imageView2"
+        app:layout_constraintVertical_bias="0.647"
+        app:layout_constraintWidth_percent="0.23" />
+
+    <Button
+        android:id="@+id/facileButton"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="164dp"
+        android:backgroundTint="#FF6122"
+        android:text="Facile"
+        android:fontFamily="@font/arcade_font"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView2"
+        app:layout_constraintEnd_toStartOf="@+id/normalButton"
+        app:layout_constraintHeight_percent="0.15"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/arcadeButton"
+        app:layout_constraintVertical_bias="1.0"
+        app:layout_constraintWidth_percent="0.23" />
+
+    <Button
+        android:id="@+id/normalButton"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:backgroundTint="#FF6122"
+        android:text="Normal"
+        android:fontFamily="@font/arcade_font"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView2"
+        app:layout_constraintEnd_toStartOf="@+id/difficileButton"
+        app:layout_constraintHeight_percent="0.15"
+        app:layout_constraintStart_toEndOf="@+id/facileButton"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.772"
+        app:layout_constraintWidth_percent="0.23" />
+
+    <Button
+        android:id="@+id/difficileButton"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="164dp"
+        android:backgroundTint="#FF6122"
+        android:text="Difficile"
+        android:fontFamily="@font/arcade_font"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.15"
+        app:layout_constraintStart_toEndOf="@+id/normalButton"
+        app:layout_constraintTop_toBottomOf="@+id/arcadeButton"
+        app:layout_constraintVertical_bias="1.0"
+        app:layout_constraintWidth_percent="0.23" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

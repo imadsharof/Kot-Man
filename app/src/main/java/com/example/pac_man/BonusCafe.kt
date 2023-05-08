@@ -30,13 +30,13 @@ class BonusCafe(
         val elapsedSeconds = elapsedTime / 1000
 
         // Le bonus apparait de 00:30 sec à 00:40 puis disparait et revient chaque apres timeBonus minute
-        if (elapsedSeconds % timeBonus >= 10 && elapsedSeconds % timeBonus < 20) {
+        if (elapsedSeconds % timeBonus >= 40 && elapsedSeconds % timeBonus < 50) {
             if (!isCollected) {
                 spawnBonus()
             }
 
             // Le bonus disparait de 00:40 à jusque (1:30 + timeBonus ) et revient apres chaque timeBonus minute
-        } else if (elapsedSeconds % timeBonus >= 20 ) {
+        } else if (elapsedSeconds % timeBonus >= 50 ) {
             isCollected = false
             isVisible = false
 

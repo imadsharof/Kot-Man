@@ -7,7 +7,7 @@ class BonusSwift(
     resources: Resources,
     caseWidth: Float,
     caseHeight: Float
-) : Bonus(resources, caseWidth, caseHeight, R.drawable.bonusswift,2) {
+) : Bonus(resources, caseWidth, caseHeight, R.drawable.bonusswift,1) {
 
     val listBonusSwift = mutableListOf<Pair<Float, Float>>()
 
@@ -32,13 +32,13 @@ class BonusSwift(
         val elapsedSeconds = elapsedTime / 1000
 
         // Le bonus apparait de 00:50 sec à 00:60 puis disparait et revient chaque apres timeBonus minute
-        if (elapsedSeconds % timeBonus >= 50 && elapsedSeconds % timeBonus < 60) {
+        if (elapsedSeconds % timeBonus >= 15 && elapsedSeconds % timeBonus < 30) {
             if (!isCollected) {
                 spawnBonus()
             }
 
             // Le bonus disparait de 00:40 à jusque (1:30 + timeBonus ) et revient apres chaque timeBonus minute
-        } else if (elapsedSeconds % timeBonus >= 60 ) {
+        } else if (elapsedSeconds % timeBonus >= 30 ) {
             isCollected = false
             isVisible = false
 

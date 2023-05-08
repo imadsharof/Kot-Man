@@ -52,8 +52,8 @@ class GameWonActivity : AppCompatActivity() {
             mediaPlayer.stop()
             mediaPlayer.reset()
             // Lancer l'activité principale (ou l'activité de jeu) pour redémarrer le jeu
-            val mainActivityIntent = Intent(this, MainActivity::class.java)
-            startActivity(mainActivityIntent)
+            val gameMenuActivityIntent = Intent(this, GameMenuActivity::class.java)
+            startActivity(gameMenuActivityIntent)
 
             // Fermer l'activité GameOver
             finish()

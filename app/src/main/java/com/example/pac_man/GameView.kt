@@ -12,38 +12,47 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import java.lang.Math.abs
 
 
 class GameView @JvmOverloads constructor (context: Context, attributes: AttributeSet? = null, defStyleAttr: Int = 0): SurfaceView(context, attributes,defStyleAttr), Runnable, SurfaceHolder.Callback {
 
+    var modeDeJeu: String = "facile"
+    var isInitialized = false
+
     lateinit var canvas : Canvas
     private lateinit var thread : Thread
     private var drawing = false
-    private val currentActivity: Activity
+    //private val currentActivity: Activity
 
 
     private val screenWidth = Resources.getSystem().displayMetrics.widthPixels.toFloat()
     private val screenHeight = Resources.getSystem().displayMetrics.heightPixels.toFloat()
 
+    var previousScore = 0
+    var previousLives = 0
 
-    private val pacMan: PacMan
-    private val labyrinthe: Labyrinthe
-    private val life: Life
-    private var pointPetit: PointPetit
-    private var pointGros : PointGros
-    private val score : Score
+    lateinit var pacMan: PacMan
+    lateinit var labyrinthe: Labyrinthe
+    lateinit var life: Life
+    lateinit var pointPetit: PointPetit
+    lateinit var pointGros : PointGros
+    lateinit var score : Score
 
-    private val fantomeVert : FantomeVert
-    private val fantomeRouge : FantomeRouge
-    private val fantomeJaune : FantomeJaune
-    private val fantomeBleu : FantomeBleu
+    lateinit var fantomeVert : FantomeVert
+    lateinit var fantomeRouge : FantomeRouge
+    lateinit var fantomeJaune : FantomeJaune
+    lateinit var fantomeBleu : FantomeBleu
 
-    private var listFantomeVert: MutableList<FantomeVert> = mutableListOf()
-    private var listFantomeRouge: MutableList<FantomeRouge> = mutableListOf()
-    private var listFantomeJaune: MutableList<FantomeJaune> = mutableListOf()
-    private var listFantomeBleu: MutableList<FantomeBleu> = mutableListOf()
+    lateinit var listFantomeVert: MutableList<FantomeVert>
+    lateinit var listFantomeRouge: MutableList<FantomeRouge>
+    lateinit var listFantomeJaune: MutableList<FantomeJaune>
+    lateinit var listFantomeBleu: MutableList<FantomeBleu>
 
+    lateinit var bonusCoeur : BonusCoeur
+    lateinit var bonusCafe : BonusCafe
+    lateinit var bonusSwift : BonusSwift
 
 
     private val timeDisplay: TimeDisplay = Time(resources)
@@ -55,28 +64,26 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
     private var initialX = 0f
     private var initialY = 0f
 
-    private val caseWidth : Float = screenWidth / 67 // 25 , 44 ou 67
-    private val caseHeight : Float = screenHeight / 27
+
+    var caseWidth : Float = screenWidth / 25 // 25 , 44 ou 67
+    var caseHeight : Float = screenHeight / 27
 
 
+    val currentActivity = context as Activity
 
-    val bonusCoeur = BonusCoeur(resources, caseWidth, caseHeight)
-    val bonusCafe = BonusCafe(resources, caseWidth, caseHeight)
-    val bonusSwift = BonusSwift(resources, caseWidth, caseHeight)
-
-    val bonus = arrayListOf(bonusCoeur,bonusCafe,bonusSwift)
-
-    private var gameStarted = false
-
-    private var lastDirection: PacMan.Direction = PacMan.Direction.NONE
     init {
-        currentActivity = context as Activity
+        //holder.addCallback(this)
+        //thread = Thread(this)
+        initializeObjects()
+    }
+    fun initializeObjects() {
+        initializeCaseDimensions()
 
-        labyrinthe = Labyrinthe(resources, caseWidth, caseHeight)
+        labyrinthe = Labyrinthe(resources, caseWidth, caseHeight, modeDeJeu)
         pacMan = PacMan(resources,caseWidth, caseHeight,labyrinthe)
-        pacMan.spawnPacMan() // Initialise la position de Pac-Man dans le labyrinthe
+        pacMan.spawnPacMan()
         pointPetit = PointPetit(resources, caseWidth, caseHeight)
-        pointGros = PointGros(resources, caseWidth, caseHeight)// Initialise l'instance de Point.
+        pointGros = PointGros(resources, caseWidth, caseHeight)// Initialise l'instance
         score = Score(context,screenWidth)
         life = Life(resources, screenWidth,currentActivity,score)
 
@@ -89,6 +96,11 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
         listFantomeRouge = mutableListOf<FantomeRouge>()
         listFantomeBleu = mutableListOf<FantomeBleu>()
         listFantomeJaune = mutableListOf<FantomeJaune>()
+
+
+        bonusCoeur = BonusCoeur(resources, caseWidth, caseHeight)
+        bonusCafe = BonusCafe(resources, caseWidth, caseHeight)
+        bonusSwift = BonusSwift(resources, caseWidth, caseHeight)
 
         for (y in labyrinthe.map.indices) {
             for (x in labyrinthe.map[y].indices) {
@@ -120,12 +132,48 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
 
         val lesfantomes = arrayListOf(fantomeVert, fantomeRouge, fantomeBleu, fantomeJaune)
         for (fantomee in lesfantomes){fantomee.spawnFantome()}
-        for ( bonuss in bonus){ bonuss.spawnBonus()}
+
+        val bonusi = arrayListOf(bonusCoeur,bonusCafe,bonusSwift)
+        for ( bonuss in bonusi){ bonuss.spawnBonus()}
+
+        isInitialized = true
+
+        if(previousLives != 0 && previousScore !=0 ){
+            life.lives = previousLives
+            score.score = previousScore
+        }
+
     }
 
-    val allFantomes = listOf(listFantomeVert, listFantomeRouge, listFantomeBleu, listFantomeJaune)
+    private var gameStarted = false
+
+    private var lastDirection: PacMan.Direction = PacMan.Direction.NONE
 
 
+    fun initializeCaseDimensions() {
+        when (modeDeJeu) {
+            "arcade" -> {
+                // Modifiez les valeurs en fonction de vos besoins
+                caseWidth = screenWidth / 25
+                caseHeight = screenHeight / 27
+            }
+            "facile" -> {
+                // Modifiez les valeurs en fonction de vos besoins
+                caseWidth = screenWidth / 25
+                caseHeight = screenHeight / 27
+            }
+            "normal" -> {
+                // Modifiez les valeurs en fonction de vos besoins
+                caseWidth = screenWidth / 44
+                caseHeight = screenHeight / 27
+            }
+            "difficile" -> {
+                // Modifiez les valeurs en fonction de vos besoins
+                caseWidth = screenWidth / 67
+                caseHeight = screenHeight / 27
+            }
+        }
+    }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         val currentX = event.x
@@ -158,7 +206,7 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
                 if ( isOppositeDirection || (pacMan.isOnTileX && pacMan.isOnTileY)) {
 
                     if (abs(deltaX) > abs(deltaY)) {
-                        println("deltaX: $deltaX, deltaY: $deltaY, isOppositeDirection: $isOppositeDirection, isOnTileX: ${pacMan.isOnTileX}, isOnTileY: ${pacMan.isOnTileY}")
+                        //println("deltaX: $deltaX, deltaY: $deltaY, isOppositeDirection: $isOppositeDirection, isOnTileX: ${pacMan.isOnTileX}, isOnTileY: ${pacMan.isOnTileY}")
                         // Déplacement horizontal
                         if (deltaX > 0) {
                             // Déplacement vers la droite
@@ -168,7 +216,7 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
                             pacMan.direction = PacMan.Direction.LEFT
                         }
                     }else if (abs(deltaY) > abs(deltaX) ) {
-                        println("deltaX: $deltaX, deltaY: $deltaY, isOppositeDirection: $isOppositeDirection, isOnTileX: ${pacMan.isOnTileX}, isOnTileY: ${pacMan.isOnTileY}")
+                        //println("deltaX: $deltaX, deltaY: $deltaY, isOppositeDirection: $isOppositeDirection, isOnTileX: ${pacMan.isOnTileX}, isOnTileY: ${pacMan.isOnTileY}")
                         // Déplacement vertical
                         if (deltaY > 0) {
                             // Déplacement vers le bas
@@ -219,70 +267,88 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
     }
 
     fun draw() {
-        if (holder.surface.isValid) {
-            canvas = holder.lockCanvas()
+            val bonus = arrayListOf(bonusCoeur,bonusCafe,bonusSwift)
+            val allFantomes = listOf(listFantomeVert, listFantomeRouge, listFantomeBleu, listFantomeJaune)
+            if (holder.surface.isValid) {
+                canvas = holder.lockCanvas()
 
-            clearCanvas() // Ajoutez cette ligne pour effacer le canvas
-            labyrinthe.draw(canvas)
-            pacMan.draw(canvas)
-            pointPetit.draw(canvas, labyrinthe.map)
-            pointGros.draw(canvas, labyrinthe.map)
+                clearCanvas() // Ajoutez cette ligne pour effacer le canvas
+                labyrinthe.draw(canvas)
+                pacMan.draw(canvas)
+                pointPetit.draw(canvas, labyrinthe.map)
+                pointGros.draw(canvas, labyrinthe.map)
 
-            for (fantomeList in allFantomes) {
-                for (fantome in fantomeList) {
-                    fantome.draw(canvas, labyrinthe)
+                for (fantomeList in allFantomes) {
+                    for (fantome in fantomeList) {
+                        fantome.draw(canvas, labyrinthe)
+                    }
                 }
+                score.draw(canvas)
+                life.draw(canvas)
+                for (bonuss in bonus) {
+                    bonuss.draw(canvas, labyrinthe)
+                }
+
+                val elapsedTime = System.currentTimeMillis() - startTime
+                timeDisplay.drawTime(canvas, elapsedTime)
+
+
+                holder.unlockCanvasAndPost(canvas)
             }
-            score.draw(canvas)
-            life.draw(canvas)
-            for ( bonuss in bonus){ bonuss.draw(canvas,labyrinthe)}
-
-            val elapsedTime = System.currentTimeMillis() - startTime
-            timeDisplay.drawTime(canvas, elapsedTime)
-
-
-            holder.unlockCanvasAndPost(canvas)
-        }
     }
 
    private fun update() {
-       pacMan.update(labyrinthe, score,allFantomes,life,bonus,this)
-       for (fantomeList in allFantomes) {
-           for (fantome in fantomeList) {
-               fantome.moveRandomly(labyrinthe)
-           }}
+           val bonus = arrayListOf(bonusCoeur,bonusCafe,bonusSwift)
+           val allFantomes = listOf(listFantomeVert, listFantomeRouge, listFantomeBleu, listFantomeJaune)
+           pacMan.update(labyrinthe, score, allFantomes, life, bonus, this)
+           for (fantomeList in allFantomes) {
+               for (fantome in fantomeList) {
+                   fantome.moveRandomly(labyrinthe)
+               }
+           }
 
-       for ( bonuss in bonus){
-           bonuss.update()
-       }
-       if(partieGagnee()){
-           val gameWonIntent = Intent(currentActivity, GameWonActivity::class.java)
-           gameWonIntent.putExtra("score", score.score)
-           currentActivity.startActivity(gameWonIntent)
-       }
+           for (bonuss in bonus) {
+               bonuss.update()
+           }
+           if (partieGagnee()) {
+               if(modeDeJeu != "arcade"){
+               val gameWonIntent = Intent(currentActivity, GameWonActivity::class.java)
+               gameWonIntent.putExtra("score", score.score)
+               currentActivity.startActivity(gameWonIntent)}
+               else{
+                   val mainActivityIntent = Intent(currentActivity, MainActivity::class.java)
+                   mainActivityIntent.putExtra("score", score.score)
+                   mainActivityIntent.putExtra("lives", life.lives)
+                   mainActivityIntent.putExtra("modeDeJeu", "arcade")
+                   currentActivity.startActivity(mainActivityIntent)
+
+                   // Envoie de message
+                   val restartMusicIntent = Intent("ACTION_GAME_RESTART")
+                   LocalBroadcastManager.getInstance(context).sendBroadcast(restartMusicIntent)
+               }
+           }
+           println(modeDeJeu)
+
     }
 
 
     override fun run() {
-        while (drawing) {
-            if (!holder.surface.isValid) {
-                continue
+            while (drawing) {
+                if (!holder.surface.isValid) {
+                    continue
+                }
+
+                if (gameStarted) {
+
+                    update()
+                    //pacMan.checkCollisionsWithGhosts(fantomes, life)
+
+                    // Dessinez le labyrinthe et les autres éléments
+                    draw()
+                }
+
             }
-
-            if (gameStarted) {
-                // Calculez le temps écoulé depuis la dernière mise à jour
-
-                // Mettez à jour la position de Pac-Man en fonction du temps écoulé
-                update()
-                //pacMan.checkCollisionsWithGhosts(fantomes, life)
-
-                // Dessinez le labyrinthe et les autres éléments
-                draw()
-            }
-
-        }
     }
-    //Thread.sleep(200) // Contrôle la vitesse de déplacement
     fun pause() {
         drawing = false
         thread.join()
@@ -295,16 +361,16 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
     }
 
     override fun surfaceCreated(p0: SurfaceHolder) {
-        TODO("Not yet implemented")
+        resume()
     }
 
     override fun surfaceChanged(p0: SurfaceHolder, p1: Int, p2: Int, p3: Int) {
-        TODO("Not yet implemented")
+        //
     }
 
     override fun surfaceDestroyed(p0: SurfaceHolder) {
 
-        TODO("Not yet implemented")
+        pause()
     }
 
     }

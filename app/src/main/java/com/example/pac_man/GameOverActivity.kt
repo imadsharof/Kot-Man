@@ -1,15 +1,11 @@
 package com.example.pac_man
 
-import android.graphics.PixelFormat
 import android.content.Intent
-import android.media.AudioManager
 import android.os.Bundle
-import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import android.media.MediaPlayer
 import android.widget.ImageButton
-import android.widget.ImageView
 import android.widget.TextView
 
 
@@ -58,8 +54,8 @@ class GameOverActivity : AppCompatActivity() {
             mediaPlayer.stop()
             mediaPlayer.reset()
             // Lancer l'activité principale (ou l'activité de jeu) pour redémarrer le jeu
-            val mainActivityIntent = Intent(this, MainActivity::class.java)
-            startActivity(mainActivityIntent)
+            val gameMenuActivityIntent = Intent(this, GameMenuActivity::class.java)
+            startActivity(gameMenuActivityIntent)
 
             // Fermer l'activité GameOver
             finish()
