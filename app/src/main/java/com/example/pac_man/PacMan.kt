@@ -7,7 +7,7 @@ import kotlin.math.*
 
 // Classe PacMan qui représente le personnage Pac-Man
 
-// Elle suit les principes SRP et SR, car elle ne s'occupe que des actions liées à Pac-Man et ne contient que des fonctions qui sont directement liées à Pac-Man
+// Elle suit les principes SRP , car elle ne s'occupe que des actions liées à Pac-Man et ne contient que des fonctions qui sont directement liées à Pac-Man
 // Elle suit également le principe OCP, car elle est facilement extensible pour de futures fonctionnalités liées à Pac-Man
 class PacMan(
     resources: Resources, // Les ressources de l'application
@@ -193,7 +193,7 @@ class PacMan(
         }
     }
 
-    private fun checkIfStuck() {
+    fun checkIfStuck() {
         val currentTileX = round(tileX)
         val currentTileY = round(tileY)
 

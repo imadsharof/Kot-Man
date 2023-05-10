@@ -104,7 +104,7 @@ class Labyrinthe(private val resources: Resources, val caseWidth: Float, val cas
         intArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
     )
 
-    val map : Array<IntArray> =
+        val map : Array<IntArray> =
         if (mode == "arcade") {
             map1
         } else if (mode == "facile") {

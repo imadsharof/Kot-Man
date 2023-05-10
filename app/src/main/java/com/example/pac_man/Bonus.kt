@@ -48,7 +48,7 @@ abstract class Bonus(
 
     // Fait apparaître le bonus à une position spécifique
     // SOLID: SRP respecté (gestion de l'apparition du bonus)
-    open fun spawnBonus() {
+    fun spawnBonus() {
         if (!isVisible && !isCollected) {
             tileX = 12F
             tileY = 10F

@@ -15,7 +15,14 @@ import kotlin.math.round
 
 /* définit une classe abstraite "Fantome" qui représente les fantômes
  dans le jeu Pac-Man. Les fantômes sont des objets mobiles qui peuvent se déplacer
- dans un labyrinthe en suivant des règles de mouvement spécifiques.*/
+ dans un labyrinthe en suivant des règles de mouvem ent spécifiques.*/
+
+/*
+Le code présenté ici respecte le principe de Interface Segregation (ISP) grâce à l'utilisation de l'interface "Movable".
+ Cette interface ne contient que les méthodes nécessaires pour déplacer un objet, à savoir les fonctions moveUp(), moveDown(), moveLeft() et moveRight().
+  Grâce à l'implémentation de cette interface dans la classe Fantome,
+  qui hérite également d'une classe abstraite, seules les méthodes nécessaires sont définies dans cette classe, évitant ainsi la surcharge
+  et la complexité inutiles.*/
 abstract class Fantome(
     private val resources: Resources,
     val caseWidth: Float,
