@@ -6,12 +6,13 @@ import android.graphics.Canvas
 class BonusCafe(
     resources: Resources,
     caseWidth: Float,
-    caseHeight: Float
-) : Bonus(resources, caseWidth, caseHeight, R.drawable.bonuscafe,1) {
+    caseHeight: Float,
+    labyrinthe: Labyrinthe
+) : Bonus(resources, caseWidth,caseHeight, R.drawable.bonuscafe,1, labyrinthe) {
 
     val listBonusCafe = mutableListOf<Pair<Float, Float>>()
 
-    override fun draw(canvas: Canvas, labyrinthe: Labyrinthe) {
+    override fun draw(canvas: Canvas) {
         if (isVisible && !isCollected) {
 
             for (y in labyrinthe.map.indices) {

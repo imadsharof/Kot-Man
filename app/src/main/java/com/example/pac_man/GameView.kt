@@ -32,29 +32,37 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
     var previousScore = 0
     var previousLives = 0
 
-    lateinit var pacMan: PacMan
-    lateinit var labyrinthe: Labyrinthe
-    lateinit var life: Life
-    lateinit var pointPetit: PointPetit
-    lateinit var pointGros : PointGros
-    lateinit var score : Score
+    private lateinit var pacMan: PacMan
+    private lateinit var labyrinthe: Labyrinthe
+    private lateinit var life: Life
 
-    lateinit var fantomeVert : FantomeVert
-    lateinit var fantomeRouge : FantomeRouge
-    lateinit var fantomeJaune : FantomeJaune
-    lateinit var fantomeBleu : FantomeBleu
-
-    lateinit var listFantomeVert: MutableList<FantomeVert>
-    lateinit var listFantomeRouge: MutableList<FantomeRouge>
-    lateinit var listFantomeJaune: MutableList<FantomeJaune>
-    lateinit var listFantomeBleu: MutableList<FantomeBleu>
-
-    lateinit var bonusCoeur : BonusCoeur
-    lateinit var bonusCafe : BonusCafe
-    lateinit var bonusSwift : BonusSwift
+    private lateinit var pointPetit: PointPetit
+    private lateinit var pointGros : PointGros
+    private lateinit var point : List<out Point>
+    private lateinit var score : Score
 
 
-    private val timeDisplay: TimeDisplay = Time(resources)
+    private lateinit var fantomeVert : FantomeVert
+    private lateinit var fantomeRouge : FantomeRouge
+    private lateinit var fantomeJaune : FantomeJaune
+    private lateinit var fantomeBleu : FantomeBleu
+
+    private lateinit var fantome: List<MutableList<out Fantome>>
+
+
+    private lateinit var listFantomeVert: MutableList<FantomeVert>
+    private lateinit var listFantomeRouge: MutableList<FantomeRouge>
+    private lateinit var listFantomeJaune: MutableList<FantomeJaune>
+    private lateinit var listFantomeBleu: MutableList<FantomeBleu>
+
+    private lateinit var bonus: List<out Bonus>
+
+    private lateinit var bonusCoeur : BonusCoeur
+    private lateinit var bonusCafe : BonusCafe
+    private lateinit var bonusSwift : BonusSwift
+
+
+    private lateinit var time : Time
     private var startTime = System.currentTimeMillis() + 6000
 
 
@@ -75,49 +83,60 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
         initializeCaseDimensions()
 
         labyrinthe = Labyrinthe(resources, caseWidth, caseHeight, modeDeJeu)
-        pacMan = PacMan(resources,caseWidth, caseHeight,labyrinthe)
-        pacMan.spawnPacMan()
-        pointPetit = PointPetit(resources, caseWidth, caseHeight)
-        pointGros = PointGros(resources, caseWidth, caseHeight)
-        score = Score(context,screenWidth)
-        life = Life(resources, screenWidth,currentActivity,score)
 
-        fantomeVert = FantomeVert(resources, caseWidth, caseHeight)
-        fantomeRouge = FantomeRouge(resources, caseWidth, caseHeight)
-        fantomeBleu = FantomeBleu(resources, caseWidth, caseHeight)
-        fantomeJaune = FantomeJaune(resources, caseWidth, caseHeight)
+        score = Score(screenWidth)
+        life = Life(resources, screenWidth,currentActivity)
+        time = Time()
+
+        fantomeVert = FantomeVert(resources, caseWidth, caseHeight,labyrinthe)
+        fantomeRouge = FantomeRouge(resources, caseWidth, caseHeight,labyrinthe)
+        fantomeBleu = FantomeBleu(resources, caseWidth, caseHeight,labyrinthe)
+        fantomeJaune = FantomeJaune(resources, caseWidth, caseHeight,labyrinthe)
 
         listFantomeVert = mutableListOf<FantomeVert>()
         listFantomeRouge = mutableListOf<FantomeRouge>()
         listFantomeBleu = mutableListOf<FantomeBleu>()
         listFantomeJaune = mutableListOf<FantomeJaune>()
 
+        fantome = listOf(listFantomeVert, listFantomeRouge, listFantomeBleu, listFantomeJaune)
 
-        bonusCoeur = BonusCoeur(resources, caseWidth, caseHeight)
-        bonusCafe = BonusCafe(resources, caseWidth, caseHeight)
-        bonusSwift = BonusSwift(resources, caseWidth, caseHeight)
+        pointPetit = PointPetit(resources, caseWidth, caseHeight,labyrinthe)
+        pointGros = PointGros(resources, caseWidth, caseHeight,labyrinthe)
+
+        point = listOf(pointPetit,pointGros)
+
+
+        bonusCoeur = BonusCoeur(resources, caseWidth,caseHeight,labyrinthe)
+        bonusCafe = BonusCafe(resources,  caseWidth,caseHeight,labyrinthe)
+        bonusSwift = BonusSwift(resources,  caseWidth,caseHeight,labyrinthe)
+
+        bonus = listOf(bonusCoeur, bonusCafe, bonusSwift)
+
+        pacMan = PacMan(resources, caseWidth, caseHeight, labyrinthe, score, fantome, life, bonus)
+        pacMan.spawnPacMan()
+
 
         for (y in labyrinthe.map.indices) {
             for (x in labyrinthe.map[y].indices) {
                 if (labyrinthe.map[y][x] == 40) {
-                    val fantomeBleu = FantomeBleu(resources, caseWidth, caseHeight)
+                    val fantomeBleu = FantomeBleu(resources, caseWidth, caseHeight,labyrinthe)
                     fantomeBleu.setPosition(x.toFloat(), y.toFloat())
                     listFantomeBleu.add(fantomeBleu)
                 }
                 else if (labyrinthe.map[y][x] == 15) {
-                    val fantomeJaune = FantomeJaune(resources, caseWidth, caseHeight)
+                    val fantomeJaune = FantomeJaune(resources, caseWidth, caseHeight,labyrinthe)
                     fantomeJaune.setPosition(x.toFloat(), y.toFloat())
                     listFantomeJaune.add(fantomeJaune)
                 }
 
                 else if (labyrinthe.map[y][x] == 41) {
-                    val fantomeRouge = FantomeRouge(resources, caseWidth, caseHeight)
+                    val fantomeRouge = FantomeRouge(resources, caseWidth, caseHeight,labyrinthe)
                     fantomeRouge.setPosition(x.toFloat(), y.toFloat())
                     listFantomeRouge.add(fantomeRouge)
                 }
 
                 else if (labyrinthe.map[y][x] == 42) {
-                    val fantomeVert = FantomeVert(resources, caseWidth, caseHeight)
+                    val fantomeVert = FantomeVert(resources, caseWidth, caseHeight,labyrinthe)
                     fantomeVert.setPosition(x.toFloat(), y.toFloat())
                     listFantomeVert.add(fantomeVert)
                 }
@@ -126,7 +145,7 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
         }
 
         val lesfantomes = arrayListOf(fantomeVert, fantomeRouge, fantomeBleu, fantomeJaune)
-        for (fantomee in lesfantomes){fantomee.spawnFantome()}
+        for (fantomes in lesfantomes){fantomes.spawnFantome()}
 
         val bonusi = arrayListOf(bonusCoeur,bonusCafe,bonusSwift)
         for ( bonuss in bonusi){ bonuss.spawnBonus()}
@@ -266,25 +285,23 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
             if (holder.surface.isValid) {
                 canvas = holder.lockCanvas()
 
-                clearCanvas() // Ajoutez cette ligne pour effacer le canvas
+                clearCanvas()
                 labyrinthe.draw(canvas)
                 pacMan.draw(canvas)
-                pointPetit.draw(canvas, labyrinthe.map)
-                pointGros.draw(canvas, labyrinthe.map)
-
+                for ( points in point) {points.draw(canvas)}
                 for (fantomeList in allFantomes) {
                     for (fantome in fantomeList) {
-                        fantome.draw(canvas, labyrinthe)
+                        fantome.draw(canvas)
                     }
                 }
                 score.draw(canvas)
                 life.draw(canvas)
                 for (bonuss in bonus) {
-                    bonuss.draw(canvas, labyrinthe)
+                    bonuss.draw(canvas)
                 }
 
                 val elapsedTime = System.currentTimeMillis() - startTime
-                timeDisplay.drawTime(canvas, elapsedTime)
+                time.draw(canvas, elapsedTime)
 
 
                 holder.unlockCanvasAndPost(canvas)
@@ -294,10 +311,10 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
    private fun update() {
            val bonus = arrayListOf(bonusCoeur,bonusCafe,bonusSwift)
            val allFantomes = listOf(listFantomeVert, listFantomeRouge, listFantomeBleu, listFantomeJaune)
-           pacMan.update(labyrinthe, score, allFantomes, life, bonus, this)
+           pacMan.update()
            for (fantomeList in allFantomes) {
                for (fantome in fantomeList) {
-                   fantome.moveRandomly(labyrinthe)
+                   fantome.moveRandomly()
                }
            }
 

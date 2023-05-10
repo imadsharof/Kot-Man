@@ -6,14 +6,20 @@ import kotlin.math.*
 
 
 // Classe PacMan qui représente le personnage Pac-Man
+
 // Elle suit les principes SRP et SR, car elle ne s'occupe que des actions liées à Pac-Man et ne contient que des fonctions qui sont directement liées à Pac-Man
 // Elle suit également le principe OCP, car elle est facilement extensible pour de futures fonctionnalités liées à Pac-Man
 class PacMan(
-    private val resources: Resources, // Les ressources de l'application
+    resources: Resources, // Les ressources de l'application
     private val caseWidth: Float, // La largeur d'une case dans le labyrinthe
     private val caseHeight: Float, // La hauteur d'une case dans le labyrinthe
-    private val labyrinthe: Labyrinthe
-) : Movable {
+    private val labyrinthe: Labyrinthe,
+    private val score: Score,
+    private val fantomes: List<MutableList<out Fantome>>,
+    private val life: Life,
+    private val bonus: List<Bonus>
+
+) : Movable, Observable {
     private var pacManBitmap: Bitmap // L'image de Pac-Man
 
     private val pacManRightBitmap: Bitmap
@@ -41,6 +47,7 @@ class PacMan(
     var speed = 1 / 16F
     var eatFantome = false //si PacMan a mangé le fantome
 
+
     var lastUpdateTime: Long = 0
 
     var lastCollisionTime: Long = 0
@@ -50,6 +57,11 @@ class PacMan(
 
 
     var direction: Direction = Direction.NONE // La direction actuelle de Pac-Man
+
+    override val observers = arrayListOf<Observer>()
+    override fun hasUpdated() {
+        eatFantome = false
+        }
 
     init {
         val pacManRightOriginal = BitmapFactory.decodeResource(resources, R.drawable.kotlindroite)
@@ -126,13 +138,7 @@ class PacMan(
         }
     }
 
-
-    // Met à jour la position de Pac-Man en fonction de sa direction actuelle et de la carte du labyrinthe
-    // et effectue des actions liées à la collision avec des points ou des fantômes
-    // Suit le principe SRP, car elle contient des fonctions liées à la mise à jour de la position et de l'état de Pac-Man, qui sont des actions cohérentes
-    // Elle suit également le principe OCP, car elle peut facilement être étendue pour des futures fonctionnalités liées à Pac-Man
-
-    fun update(labyrinthe: Labyrinthe, score: Score, fantomes: List<MutableList<out Fantome>>, life: Life, bonus: List<Bonus>, gameView: GameView) {
+    fun update() {
 
         when (direction) {
             Direction.NONE -> {
@@ -158,29 +164,28 @@ class PacMan(
         val pointsGained = eatPoint(labyrinthe)
         score.incrementScore(pointsGained)
 
-        if (eatFantome) {
-            for (fantomeList in fantomes) {
-                for(fantome in fantomeList){
-                fantome.isScary = true
-            }}
-        } else {
-            for (fantomeList in fantomes) {
-                for(fantome in fantomeList){
-                fantome.isScary = false
-                fantome.isVisible = true}
-            }
-        }
+
+        for(fantomeList in fantomes) {for(fantome in fantomeList){fantome.update(eatFantome)}}
 
         teleport(labyrinthe)
         for (bonuss in bonus) {
-            collectBonus(bonuss, life, gameView)
+            collectBonus(bonuss, life)
         }
         updateSpeed()
         updateEatFantome()
         // Vérifie s'il y a collision entre Pac-Man et les fantômes
         checkCollisionsWithGhosts(fantomes, life,score)
         checkIfStuck()
-        //println("nbe lignes = " + labyrinthe.nbLignes + "nbe Colonnes = " +labyrinthe.nbColonnes )
+    }
+
+    fun updateEatFantome() {
+        val currentTime = System.currentTimeMillis()
+        // Quand Pac-Man a mangé un gros point, il a 5 secondes pour manger les fantômes effrayés
+        if (eatFantome && currentTime - lastPointGrosTime >= 5000) {
+            // Réinitialiser l'état de Pac-Man
+            hasUpdated() // notifier les observateurs du changement d'état
+            lastPointGrosTime = 0
+        }
     }
 
     private fun checkIfStuck() {
@@ -201,7 +206,7 @@ class PacMan(
     }
 
 
-    fun collectBonus(bonus: Bonus, life: Life, gameView: GameView) {
+    fun collectBonus(bonus: Bonus, life: Life) {
 
         if(bonus is BonusSwift){
             val bonusIterator = bonus.listBonusSwift.iterator() // permet de parcourir éléments listes
@@ -269,18 +274,7 @@ class PacMan(
 
     }
 
-    fun updateEatFantome() {
-        val currentTime = System.currentTimeMillis()
-        // Quand Pac-Man a mangé un gros point, il a 5 secondes pour manger les fantômes effrayés
-        if (eatFantome && currentTime - lastPointGrosTime >= 5000) {
-            // Réinitialiser l'état de Pac-Man
-            eatFantome = false
-            lastPointGrosTime = 0
-        }
-    }
 
-    // Téléporte Pac-Man s'il se trouve sur une case de téléportation dans la carte du labyrinthe
-// Suit le principe SRP, car elle contient une fonction cohérente qui est liée à la téléportation de Pac-Man
     fun teleport(labyrinthe: Labyrinthe) {
         if (labyrinthe.getmapvalue(tileX, tileY, labyrinthe.map) == 6) { //mode facile
             if (labyrinthe.nbColonnes<30){ setPosition(21F, 12F)} // mode normal
@@ -291,9 +285,6 @@ class PacMan(
         }
     }
 
-
-    // Vérifie s'il y a collision entre Pac-Man et les fantômes
-// Suit le principe SRP, car elle contient une fonction cohérente qui est liée à la vérification des collisions entre Pac-Man et les fantômes
     fun checkCollisionsWithGhosts(fantomes: List<MutableList<out Fantome>>, life: Life, score: Score) {
 
         val currentTime = System.currentTimeMillis()
@@ -309,7 +300,7 @@ class PacMan(
                         // Vérifier si suffisamment de temps s'est écoulé depuis la dernière collision
                         // Je laisse un délai de 1 seconde avant de toucher un autre fantôme
                         if (currentTime - lastCollisionTime >= 1000) {
-                            life.decreaseLife()
+                            life.decreaseLife(score)
                             lastCollisionTime = currentTime
                         }
                     }
@@ -328,16 +319,10 @@ class PacMan(
         }
     }
 
-
-    // Dessine Pac-Man sur le canvas
-    // Suit le principe SRP, car elle contient une fonction cohérente qui est liée au dessin de Pac-Man
     fun draw(canvas: Canvas) {
         canvas.drawBitmap(pacManBitmap, tileX* caseWidth, tileY * caseHeight, null)
     }
 
-
-    // Mange les points présents sur la case actuelle de Pac-Man s'il y en a
-    // Suit le principe SRP, car elle contient une fonction cohérente qui est liée à la consommation des points par Pac-Man
     fun eatPoint(labyrinthe: Labyrinthe): Int {
 
         if (labyrinthe.getmapvalue(round(tileX), round(tileY), labyrinthe.map) == 2 && (tileX %1 ==0f && tileY%1 == 0f)) {

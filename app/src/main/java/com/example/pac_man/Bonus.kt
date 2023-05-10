@@ -10,7 +10,8 @@ abstract class Bonus(
     val caseWidth: Float,
     val caseHeight: Float,
     bonusDrawable: Int,
-    private val bonusFrequency : Int
+    bonusFrequency : Int,
+    val labyrinthe: Labyrinthe
 
 ) {
     val bonusBitmap: Bitmap
@@ -30,11 +31,11 @@ abstract class Bonus(
     init {
         val bonusOriginal = BitmapFactory.decodeResource(resources, bonusDrawable)
         bonusBitmap =
-            Bitmap.createScaledBitmap(bonusOriginal, caseWidth.toInt(), caseHeight.toInt(), true)
+            Bitmap.createScaledBitmap(bonusOriginal, caseWidth.toInt(),  caseHeight.toInt(), true)
     }
-    open fun draw(canvas: Canvas,labyrinthe: Labyrinthe) {
+    open fun draw(canvas: Canvas) {
         if (isVisible && !isCollected) {
-            canvas.drawBitmap(bonusBitmap, tileX * caseWidth, tileY * caseHeight, null)
+            canvas.drawBitmap(bonusBitmap, tileX *  caseWidth, tileY *  caseHeight, null)
         }
     }
 

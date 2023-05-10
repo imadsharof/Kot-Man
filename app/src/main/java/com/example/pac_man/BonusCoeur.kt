@@ -6,11 +6,12 @@ import android.graphics.Canvas
 class BonusCoeur(
     resources: Resources,
     caseWidth: Float,
-caseHeight: Float
-) : Bonus(resources, caseWidth, caseHeight, R.drawable.bonuscoeur,1) {
+    caseHeight: Float,
+    labyrinthe: Labyrinthe
+) : Bonus(resources, caseWidth,caseHeight, R.drawable.bonuscoeur,1,labyrinthe) {
 
     val listBonusCoeur = mutableListOf<Pair<Float, Float>>()
-    override fun draw(canvas: Canvas, labyrinthe: Labyrinthe) {
+    override fun draw(canvas: Canvas) {
         if (isVisible && !isCollected) {
 
             for (y in labyrinthe.map.indices) {

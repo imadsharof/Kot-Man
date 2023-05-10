@@ -5,8 +5,9 @@ import android.content.res.Resources
 class FantomeJaune(
     resources: Resources,
     caseWidth: Float,
-    caseHeight: Float
-) : Fantome(resources, caseWidth, caseHeight, R.drawable.fantomejaune,R.drawable.fantomegris) {
+    caseHeight: Float,
+    labyrinthe: Labyrinthe
+) : Fantome(resources, caseWidth, caseHeight, R.drawable.fantomejaune,R.drawable.fantomegris,labyrinthe) {
 
     override fun spawnFantome() {
         // Initialise la position du fantôme vert dans le labyrinthe

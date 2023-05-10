@@ -6,13 +6,14 @@ import android.graphics.Canvas
 class BonusSwift(
     resources: Resources,
     caseWidth: Float,
-    caseHeight: Float
-) : Bonus(resources, caseWidth, caseHeight, R.drawable.bonusswift,1) {
+    caseHeight: Float,
+    labyrinthe: Labyrinthe
+) : Bonus(resources, caseWidth,caseHeight, R.drawable.bonusswift,1,labyrinthe) {
 
     val listBonusSwift = mutableListOf<Pair<Float, Float>>()
 
 
-    override fun draw(canvas: Canvas,labyrinthe: Labyrinthe) {
+    override fun draw(canvas: Canvas) {
         if (isVisible && !isCollected) {
 
             for (y in labyrinthe.map.indices) {

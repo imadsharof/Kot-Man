@@ -6,7 +6,7 @@ import android.graphics.Color
 import android.graphics.Paint
 
 
-class Time(private val resources: Resources) : TimeDisplay {
+class Time {
 
     private var startTime = System.currentTimeMillis() + 6000
 
@@ -17,14 +17,14 @@ class Time(private val resources: Resources) : TimeDisplay {
         // Charger la police personnalisée
     }
 
-    override fun drawTime(canvas: Canvas, elapsedTime: Long) {
+    fun draw(canvas: Canvas, elapsedTime: Long) {
         val seconds = elapsedTime / 1000
         val minutes = seconds / 60
         val formattedTime = String.format("%02d:%02d", minutes, seconds % 60)
         canvas.drawText("Timer: $formattedTime", 20f, 60f, paint)
     }
 
-    override fun resetTime() {
+    fun resetTime() {
         startTime = System.currentTimeMillis() + 6000
     }
 

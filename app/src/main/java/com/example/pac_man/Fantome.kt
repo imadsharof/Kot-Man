@@ -17,8 +17,10 @@ abstract class Fantome(
     val caseWidth: Float,
     val caseHeight: Float,
     fantomeDrawable: Int,
-    scaryFantomeDrawable: Int
-) {
+    scaryFantomeDrawable: Int,
+    private val labyrinthe: Labyrinthe
+) : Movable,Observer {
+
     val fantomeBitmap: Bitmap
     val scaryFantomeBitmap: Bitmap
 
@@ -30,6 +32,7 @@ abstract class Fantome(
     var nextTileY = 0F
 
     var isExit = false
+
     var isVisible = true
     var isScary = false
 
@@ -53,6 +56,45 @@ abstract class Fantome(
         scaryFantomeBitmap = Bitmap.createScaledBitmap(scaryFantomeOriginal, caseWidth.toInt(), caseHeight.toInt(), true)
     }
 
+    override fun update(eatFantome: Boolean) {
+        if (eatFantome) {
+            isScary = true
+        } else {
+            isScary = false
+            isVisible = true
+        }
+    }
+
+    override fun moveDown() {
+        nextTileY = tileY +speed
+        if (!labyrinthe.isMur2(tileX, nextTileY) && !labyrinthe.isMur2(tileX ,tileY + 1F)) {
+            tileY = nextTileY
+        }
+    }
+
+    override fun moveLeft() {
+        nextTileX = tileX - speed
+        if (!labyrinthe.isMur2(nextTileX, tileY) && !labyrinthe.isMur2(ceil(tileX - 1F),tileY)) {
+            tileX = nextTileX
+        }
+    }
+
+    override fun moveRight() {
+        if(!labyrinthe.isMur2(tileX + 1F,tileY)){
+            nextTileX = tileX + speed}
+        if (!labyrinthe.isMur2(nextTileX, tileY) && !labyrinthe.isMur2(tileX + 1F,tileY)) {
+            tileX = nextTileX
+        }
+    }
+
+    override fun moveUp() {
+        nextTileY = tileY - speed
+        if (!labyrinthe.isMur2(tileX, nextTileY)&& !labyrinthe.isMur2(tileX ,ceil(tileY - 1F)) ) {
+            tileY = nextTileY
+        }
+
+    }
+
     open fun spawnFantome() {
         // Initialise la position du fantôme dans le labyrinthe
         tileX = 11F
@@ -64,15 +106,15 @@ abstract class Fantome(
         tileY = newtileY
     }
 
-    open fun draw(canvas: Canvas,labyrinthe: Labyrinthe) {
+    open fun draw(canvas: Canvas) {
         if(isVisible){
         if(!isScary){ canvas.drawBitmap(fantomeBitmap, tileX * caseWidth, tileY * caseHeight, null)}
         else{ canvas.drawBitmap(scaryFantomeBitmap, tileX * caseWidth, tileY * caseHeight, null) }}
     }
 
-    fun moveRandomly(labyrinthe: Labyrinthe) {
+    fun moveRandomly() {
         if (isExit) {
-            updatemove(labyrinthe)
+            updatemove()
         } else {
             val murH = labyrinthe.isMur2(tileX, ceil(tileY - 1F))
             val murB = labyrinthe.isMur2(tileX, tileY + 1F)
@@ -100,39 +142,23 @@ abstract class Fantome(
 
         when (direction) {
             PacMan.Direction.UP -> {
-                nextTileY = tileY - speed
-                if (!labyrinthe.isMur2(tileX, nextTileY)&& !labyrinthe.isMur2(tileX ,ceil(tileY - 1F)) ) {
-                    tileY = nextTileY
-                }
-
+                moveUp()
             }
             PacMan.Direction.DOWN -> {
-                nextTileY = tileY +speed
-                if (!labyrinthe.isMur2(tileX, nextTileY) && !labyrinthe.isMur2(tileX ,tileY + 1F)) {
-                    tileY = nextTileY
-                }
+                moveDown()
             }
             PacMan.Direction.LEFT -> {
-                nextTileX = tileX - speed
-                if (!labyrinthe.isMur2(nextTileX, tileY) && !labyrinthe.isMur2(ceil(tileX - 1F),tileY)) {
-                    tileX = nextTileX
-                }
-
+                moveLeft()
             }
             PacMan.Direction.RIGHT -> {
-                if(!labyrinthe.isMur2(tileX + 1F,tileY)){
-                    nextTileX = tileX + speed}
-                if (!labyrinthe.isMur2(nextTileX, tileY) && !labyrinthe.isMur2(tileX + 1F,tileY)) {
-                    tileX = nextTileX
-                }
-
+                moveRight()
             }
             else -> { /* Ne rien faire */
             }
         }
     }
 
-    fun updatemove(labyrinthe: Labyrinthe){
+    fun updatemove(){
         if (direction == PacMan.Direction.UP){
             if(labyrinthe.isMur2(tileX ,ceil(tileY - 1F)) && !labyrinthe.isMur2(ceil(tileX - 1F),tileY) && !labyrinthe.isMur2(tileX + 1F,tileY)){
 
