@@ -8,6 +8,8 @@ import android.graphics.Paint
 
 class Time {
 
+    //  initialiser la variable startTime, ce qui permet d'obtenir l'heure actuelle en millisecondes
+    //temps initial sera de 6 secondes pour permettre le compte à rebours de s'afficher
     private var startTime = System.currentTimeMillis() + 6000
 
     private val paint = Paint().apply {
@@ -23,9 +25,4 @@ class Time {
         val formattedTime = String.format("%02d:%02d", minutes, seconds % 60)
         canvas.drawText("Timer: $formattedTime", 20f, 60f, paint)
     }
-
-    fun resetTime() {
-        startTime = System.currentTimeMillis() + 6000
-    }
-
 }

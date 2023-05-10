@@ -8,6 +8,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageButton
 
+// Single Responsibility Principle (SRP) : La classe a une seule responsabilité,
+// qui est de gérer la vue et le son du bouton de menu de jeu.
+// Cela est clairement séparé  de la logique du jeu lui-même.
 class GameMenuActivity : AppCompatActivity() {
     lateinit var playButton : ImageButton
     private var soundPool: SoundPool? = null

@@ -61,7 +61,7 @@ class GameOverActivity : AppCompatActivity() {
             finish()
         }
 
-        // Lorsque le jeu se termine, envoyez un signal pour arrêter la musique
+        // Lorsque le jeu se termine, on envoie un signal pour arrêter la musique
         val gameOverIntent = Intent("ACTION_GAME_OVER")
         LocalBroadcastManager.getInstance(this).sendBroadcast(gameOverIntent)
 

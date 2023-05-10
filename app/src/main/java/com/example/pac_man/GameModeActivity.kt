@@ -13,7 +13,7 @@ class GameModeActivity : AppCompatActivity() {
     lateinit var normalButton : Button
     lateinit var difficileButton : Button
 
-    private var soundPool: SoundPool? = null
+    private var soundPool: SoundPool? = null // permet d'ajouter le son lorsqu'on clique sur le bouton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,8 +23,6 @@ class GameModeActivity : AppCompatActivity() {
         normalButton = findViewById<Button>(R.id.normalButton)
         difficileButton = findViewById<Button>(R.id.difficileButton)
 
-        //gameView = findViewById<GameView>(R.id.gameView)
-        
 
         soundPool = SoundPool(6, AudioManager.STREAM_MUSIC, 0)
         val soundplay = soundPool!!.load(baseContext, R.raw.startgameaudio, 1)

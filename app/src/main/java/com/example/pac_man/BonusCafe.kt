@@ -12,6 +12,7 @@ class BonusCafe(
 
     val listBonusCafe = mutableListOf<Pair<Float, Float>>()
 
+    // responsable du dessin de l'objet
     override fun draw(canvas: Canvas) {
         if (isVisible && !isCollected) {
 

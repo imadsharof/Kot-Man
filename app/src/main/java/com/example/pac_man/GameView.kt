@@ -18,10 +18,10 @@ import java.lang.Math.abs
 
 class GameView @JvmOverloads constructor (context: Context, attributes: AttributeSet? = null, defStyleAttr: Int = 0): SurfaceView(context, attributes,defStyleAttr), Runnable, SurfaceHolder.Callback {
 
-    var modeDeJeu: String = "facile"
+    var modeDeJeu: String = "facile" // représente le mode de jeu choisi, facile, normal, difficile ou arcade
     var isInitialized = false
 
-    lateinit var canvas : Canvas
+    lateinit var canvas : Canvas //  objet Canvas utilisé pour dessiner les éléments du jeu
     private lateinit var thread : Thread
     private var drawing = false
 
@@ -79,6 +79,9 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
     init {
         initializeObjects()
     }
+
+    // initialise tous les objets nécessaires au jeu.
+    // Elle initialise également la taille des cases du labyrinthe en fonction du mode de jeu choisi.
     fun initializeObjects() {
         initializeCaseDimensions()
 
@@ -189,6 +192,7 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
         }
     }
 
+    // ère les événements tactiles de l'utilisateur pour déplacer Pac-Man dans le labyrinthe
     override fun onTouchEvent(event: MotionEvent): Boolean {
         val currentX = event.x
         val currentY = event.y
@@ -251,12 +255,13 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
         return true
     }
 
+    // indique que le jeu a commencé.
     fun startGame() {
         gameStarted = true
     }
 
 
-
+    //efface le canvas en dessinant un rectangle noir.
     private fun clearCanvas() {
         val backgroundColor = Color.BLACK
         val paint = Paint().apply {
@@ -266,6 +271,7 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
         canvas.drawRect(0f, 0f, screenWidth.toFloat(), screenHeight.toFloat(), paint)
     }
 
+    // vérifie si toutes les cases de la matrice ont été vidées de leurs points
     fun partieGagnee(): Boolean {
         val chiffresRecherches = setOf(2, 4, 7, 12, 13, 16, 17, 18)
 
@@ -279,6 +285,7 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
         return true
     }
 
+    // dessine tous les éléments du jeu sur le canvas
     fun draw() {
             val bonus = arrayListOf(bonusCoeur,bonusCafe,bonusSwift)
             val allFantomes = listOf(listFantomeVert, listFantomeRouge, listFantomeBleu, listFantomeJaune)
@@ -308,6 +315,8 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
             }
     }
 
+    // met à jour la position des fantômes et des bonus et vérifie si le jeu est gagné ou non.
+    // Si le jeu est gagné, elle lance une nouvelle activité en fonction du mode de jeu choisi.
    private fun update() {
            val bonus = arrayListOf(bonusCoeur,bonusCafe,bonusSwift)
            val allFantomes = listOf(listFantomeVert, listFantomeRouge, listFantomeBleu, listFantomeJaune)
@@ -343,6 +352,8 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
     }
 
 
+    //  exécute une boucle de jeu en continuant de mettre à jour et de dessiner
+    //  les éléments du jeu tant que la variable drawing est vraie
     override fun run() {
             while (drawing) {
                 if (!holder.surface.isValid) {
@@ -360,11 +371,14 @@ class GameView @JvmOverloads constructor (context: Context, attributes: Attribut
 
             }
     }
+
+    // permettent de mettre en pause le jeu
     fun pause() {
         drawing = false
         thread.join()
     }
 
+    // permettent de reprendre le jeu
     fun resume() {
         drawing = true
         thread = Thread(this)

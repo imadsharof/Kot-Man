@@ -10,6 +10,8 @@ class PointPetit(private val resources: Resources, caseWidth: Float, caseHeight:
         paint.color = resources.getColor(R.color.pointColor) // Remplace 'R.color.dotColor' par la couleur de ton choix.
     }
 
+    // dessiner des cercles sur le Canvas à des positions spécifiques
+    // sur la matrice de la map labyrinthe en utilisant les dimensions de la case
     override fun draw(canvas: Canvas) {
         for (i in labyrinthe.map.indices) {
             for (j in labyrinthe.map[i].indices) {

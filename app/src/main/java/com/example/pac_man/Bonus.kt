@@ -5,6 +5,10 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 
+
+// La classe abstraite Bonus représente un bonus générique pour le jeu
+// SOLID: Cette classe suit le principe de Responsabilité Unique (SRP)
+// en ayant pour seule responsabilité la gestion des bonus
 abstract class Bonus(
     private val resources: Resources,
     val caseWidth: Float,
@@ -33,12 +37,17 @@ abstract class Bonus(
         bonusBitmap =
             Bitmap.createScaledBitmap(bonusOriginal, caseWidth.toInt(),  caseHeight.toInt(), true)
     }
+
+    // Dessine le bonus sur le canvas s'il est visible et non collecté
+    // SOLID: SRP respecté (affichage du bonus)
     open fun draw(canvas: Canvas) {
         if (isVisible && !isCollected) {
             canvas.drawBitmap(bonusBitmap, tileX *  caseWidth, tileY *  caseHeight, null)
         }
     }
 
+    // Fait apparaître le bonus à une position spécifique
+    // SOLID: SRP respecté (gestion de l'apparition du bonus)
     open fun spawnBonus() {
         if (!isVisible && !isCollected) {
             tileX = 12F
@@ -48,11 +57,14 @@ abstract class Bonus(
         }
     }
 
+    // Cache le bonus
+    // SOLID: SRP respecté (gestion de la visibilité du bonus)
     open fun hideBonus() {
         isVisible = false
     }
 
-
+    // Met à jour l'état du bonus en fonction du temps écoulé
+    // SOLID: SRP respecté (mise à jour de l'état du bonus)
     open fun update() {
         val elapsedTime = System.currentTimeMillis() - startTime
         val elapsedSeconds = elapsedTime / 1000

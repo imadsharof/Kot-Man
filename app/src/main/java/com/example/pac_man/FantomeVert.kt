@@ -9,9 +9,5 @@ class FantomeVert(
     labyrinthe: Labyrinthe
 ) : Fantome(resources, caseWidth, caseHeight, R.drawable.fantomevert,R.drawable.fantomegris,labyrinthe) {
 
-    override fun spawnFantome() {
-        // Initialise la position du fantôme vert dans le labyrinthe
-        tileX = 12F
-        tileY = 12F
-    }
+
 }

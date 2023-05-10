@@ -14,6 +14,7 @@ class Score( private val screenWidth: Float) {
     }
     var score = 0
 
+    // dessine le score à l'écran au milieu en haut
     fun draw(canvas: Canvas) {
         val scoreText = "Score: $score"
         val textWidth = paint.measureText(scoreText)
@@ -22,6 +23,7 @@ class Score( private val screenWidth: Float) {
         canvas.drawText(scoreText, x, y, paint)
     }
 
+    // incrémente le score en fonctions du nombre de points qu'on lui attribue
     fun incrementScore(points: Int) {
         score += points
     }

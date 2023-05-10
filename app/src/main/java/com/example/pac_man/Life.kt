@@ -21,8 +21,6 @@ class Life(private val resources: Resources, private val screenWidth: Float, pri
         textPaint.typeface = Typeface.DEFAULT_BOLD
     }
 
-
-
     fun decreaseLife(score : Score) {
         lives -= 1
         if (lives <= 0) {

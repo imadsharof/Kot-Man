@@ -4,11 +4,11 @@ import android.content.res.Resources
 import android.graphics.*
 import kotlin.math.ceil
 
+// ce code respecte le principe de responsabilité unique (SRP) en définissant une seule classe pour la gestion et le dessin du labyrinthe.
 class Labyrinthe(private val resources: Resources, val caseWidth: Float, val caseHeight: Float, val mode : String) {
 
 
-    
-    //var mode = "facile"
+
     var wallOriginal: Bitmap = BitmapFactory.decodeResource(resources, R.drawable.brique)
     var wallBitmap: Bitmap = Bitmap.createScaledBitmap(wallOriginal, caseWidth.toInt(),caseHeight.toInt(), true)
 
@@ -180,10 +180,9 @@ class Labyrinthe(private val resources: Resources, val caseWidth: Float, val cas
     }
 
 
-    // Fun draw dessine avec des briques
-
 
     fun draw(canvas: Canvas) {
+        // Ne dessine pas avec des images les murs si le mode de jeu est en arcade
         if(mode == "arcade") {
             val borderWidth = 5f // ajustez la valeur de l'épaisseur de bordure
             val paint = Paint().apply {
@@ -278,7 +277,5 @@ class Labyrinthe(private val resources: Resources, val caseWidth: Float, val cas
             }
         }
     }
-
-
 
 }

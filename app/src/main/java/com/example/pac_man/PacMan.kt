@@ -85,7 +85,8 @@ class PacMan(
         RIGHT
     }
 
-   fun setPosition(newtileX: Float, newtileY: Float) {
+    // fonction qui permet de changer la position de Pac-Man
+    fun setPosition(newtileX: Float, newtileY: Float) {
         tileX = newtileX
         tileY = newtileY
     }
@@ -96,6 +97,7 @@ class PacMan(
         tileY = 17F
     }
 
+    //fonction qui permet à Pac-Man de se déplacer vers la gauche
     override fun moveLeft() {
         pacManBitmap = pacManLeftBitmap
         nextTileX = tileX - speed
@@ -104,6 +106,7 @@ class PacMan(
         }
     }
 
+    //fonction qui permet à Pac-Man de se déplacer vers la droite
     override  fun moveRight() {
         pacManBitmap = pacManRightBitmap
         if (!labyrinthe.isMur2(tileX + 1F, tileY)) {
@@ -114,6 +117,7 @@ class PacMan(
         }
     }
 
+    //fonction qui permet à Pac-Man de se déplacer vers le haut
     override  fun moveUp() {
         pacManBitmap = pacManUpBitmap
         nextTileY = tileY - speed
@@ -123,6 +127,7 @@ class PacMan(
         }
     }
 
+    // fonction qui permet à Pac-Man de se déplacer vers le bas
     override  fun moveDown() {
         pacManBitmap = pacManDownBitmap
         nextTileY = tileY + speed
@@ -138,6 +143,8 @@ class PacMan(
         }
     }
 
+    // fonction qui met à jour la position de Pac-Man dans le labyrinthe et les différents éléments du jeu
+    // tels que les points, les bonus et les fantômes
     fun update() {
 
         when (direction) {
@@ -161,20 +168,18 @@ class PacMan(
         isOnTileY = abs(tileY - round(tileY)) == 0F
 
         lastUpdateTime = System.currentTimeMillis()
-        val pointsGained = eatPoint(labyrinthe)
+        val pointsGained = eatPoint()
         score.incrementScore(pointsGained)
 
 
         for(fantomeList in fantomes) {for(fantome in fantomeList){fantome.update(eatFantome)}}
 
-        teleport(labyrinthe)
-        for (bonuss in bonus) {
-            collectBonus(bonuss, life)
-        }
+        teleport()
+        for (bonuss in bonus) { collectBonus(bonuss) }
         updateSpeed()
         updateEatFantome()
         // Vérifie s'il y a collision entre Pac-Man et les fantômes
-        checkCollisionsWithGhosts(fantomes, life,score)
+        checkCollisionsWithGhosts()
         checkIfStuck()
     }
 
@@ -206,7 +211,8 @@ class PacMan(
     }
 
 
-    fun collectBonus(bonus: Bonus, life: Life) {
+    //fonction qui permet à Pac-Man de collecter des bonus tels que le café ou le cœur
+    fun collectBonus(bonus: Bonus) {
 
         if(bonus is BonusSwift){
             val bonusIterator = bonus.listBonusSwift.iterator() // permet de parcourir éléments listes
@@ -254,6 +260,7 @@ class PacMan(
         }
     }
 
+    //  fonction qui met à jour la vitesse de Pac-Man en fonction des bonus collectés
     fun updateSpeed() {
         val currentTime = System.currentTimeMillis()
         // Bonus actif pendant 5sec
@@ -274,8 +281,8 @@ class PacMan(
 
     }
 
-
-    fun teleport(labyrinthe: Labyrinthe) {
+//  fonction qui permet à Pac-Man de se téléporter d'un point à un autre du labyrinthe
+    fun teleport() {
         if (labyrinthe.getmapvalue(tileX, tileY, labyrinthe.map) == 6) { //mode facile
             if (labyrinthe.nbColonnes<30){ setPosition(21F, 12F)} // mode normal
             else if(labyrinthe.nbColonnes<50){setPosition(40F,12F)} // mode difficile
@@ -285,7 +292,8 @@ class PacMan(
         }
     }
 
-    fun checkCollisionsWithGhosts(fantomes: List<MutableList<out Fantome>>, life: Life, score: Score) {
+    // fonction qui permet de détecter les collisions entre Pac-Man et les fantômes
+    fun checkCollisionsWithGhosts() {
 
         val currentTime = System.currentTimeMillis()
 
@@ -319,11 +327,13 @@ class PacMan(
         }
     }
 
+    // fonction qui dessine Pac-Man dans le labyrinthe
     fun draw(canvas: Canvas) {
         canvas.drawBitmap(pacManBitmap, tileX* caseWidth, tileY * caseHeight, null)
     }
 
-    fun eatPoint(labyrinthe: Labyrinthe): Int {
+    //  fonction qui permet à Pac-Man de manger des points dans le labyrinthe.
+    fun eatPoint(): Int {
 
         if (labyrinthe.getmapvalue(round(tileX), round(tileY), labyrinthe.map) == 2 && (tileX %1 ==0f && tileY%1 == 0f)) {
             labyrinthe.setmapvalue(tileX, tileY, labyrinthe.map, 0)

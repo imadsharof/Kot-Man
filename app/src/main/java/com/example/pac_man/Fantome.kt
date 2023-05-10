@@ -12,6 +12,10 @@ import kotlinx.coroutines.launch
 import kotlin.math.ceil
 import kotlin.math.round
 
+
+/* définit une classe abstraite "Fantome" qui représente les fantômes
+ dans le jeu Pac-Man. Les fantômes sont des objets mobiles qui peuvent se déplacer
+ dans un labyrinthe en suivant des règles de mouvement spécifiques.*/
 abstract class Fantome(
     private val resources: Resources,
     val caseWidth: Float,
@@ -56,6 +60,7 @@ abstract class Fantome(
         scaryFantomeBitmap = Bitmap.createScaledBitmap(scaryFantomeOriginal, caseWidth.toInt(), caseHeight.toInt(), true)
     }
 
+    // fonction pour mettre à jour l'état du fantôme
     override fun update(eatFantome: Boolean) {
         if (eatFantome) {
             isScary = true
@@ -65,6 +70,7 @@ abstract class Fantome(
         }
     }
 
+    //  déplacer le fantôme en bas
     override fun moveDown() {
         nextTileY = tileY +speed
         if (!labyrinthe.isMur2(tileX, nextTileY) && !labyrinthe.isMur2(tileX ,tileY + 1F)) {
@@ -72,6 +78,7 @@ abstract class Fantome(
         }
     }
 
+    //  déplacer le fantôme à gauche
     override fun moveLeft() {
         nextTileX = tileX - speed
         if (!labyrinthe.isMur2(nextTileX, tileY) && !labyrinthe.isMur2(ceil(tileX - 1F),tileY)) {
@@ -79,6 +86,7 @@ abstract class Fantome(
         }
     }
 
+    //  déplacer le fantôme à droite
     override fun moveRight() {
         if(!labyrinthe.isMur2(tileX + 1F,tileY)){
             nextTileX = tileX + speed}
@@ -87,6 +95,7 @@ abstract class Fantome(
         }
     }
 
+    // déplacer le fantôme en haut
     override fun moveUp() {
         nextTileY = tileY - speed
         if (!labyrinthe.isMur2(tileX, nextTileY)&& !labyrinthe.isMur2(tileX ,ceil(tileY - 1F)) ) {
@@ -101,17 +110,21 @@ abstract class Fantome(
         tileY = 11F
     }
 
+    // définir la position du fantôme dans le labyrinthe à une position donnée.
     fun setPosition(newtileX : Float,newtileY: Float) {
         tileX = newtileX
         tileY = newtileY
     }
 
+    // dessiner le fantôme sur un canvas.
+    // Selon l'état du fantôme, soit l'image normale du fantôme soit l'image effrayante sera dessinée.
     open fun draw(canvas: Canvas) {
         if(isVisible){
         if(!isScary){ canvas.drawBitmap(fantomeBitmap, tileX * caseWidth, tileY * caseHeight, null)}
         else{ canvas.drawBitmap(scaryFantomeBitmap, tileX * caseWidth, tileY * caseHeight, null) }}
     }
 
+    // fonction pour déplacer aléatoirement le fantôme
     fun moveRandomly() {
         if (isExit) {
             updatemove()
@@ -158,6 +171,7 @@ abstract class Fantome(
         }
     }
 
+    // fonction pour mettre à jour la direction de déplacement du fantôme
     fun updatemove(){
         if (direction == PacMan.Direction.UP){
             if(labyrinthe.isMur2(tileX ,ceil(tileY - 1F)) && !labyrinthe.isMur2(ceil(tileX - 1F),tileY) && !labyrinthe.isMur2(tileX + 1F,tileY)){
