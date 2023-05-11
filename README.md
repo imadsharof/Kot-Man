@@ -1,5 +1,11 @@
 # Jeu Kot-Man
 Ce projet consiste à créer un jeu **Pac-Man** / **PacMan** en utilisant Kotlin pour la plateforme Android. Le jeu offre une interface utilisateur avec un menu permettant de sélectionner le mode de jeu, comprenant les options "Facile", "Normal", "Difficile" et "Arcade".
+# Vidéo du jeu
+
+
+Uploading 23-05-11-12-22-09_01_01_01.mp4…
+
+
 
 ## Principe du jeu
 Le joueur peut démarrer le jeu en appuyant sur "Start Game" et devra naviguer à travers un labyrinthe, évitant les fantômes et collectant des points. Lorsque le joueur gagne, un écran de victoire s'affiche, et en cas de défaite, un écran de défaite est affiché.
